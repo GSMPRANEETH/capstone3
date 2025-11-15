@@ -29,7 +29,6 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		}, []);
 		return (
 			<div ref={ref} {...props}>
-				<p className="text-4xl">Articles</p>
 				{articles.map((article) => (
 					<Link key={article.id} to={`article/${article.id}`}>
 						<div className="border-b border-gray-300">
