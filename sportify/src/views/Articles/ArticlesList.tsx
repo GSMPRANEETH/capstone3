@@ -14,12 +14,10 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 				});
 
 				if (!response.ok) {
-					throw new Error("Sign-in failed!");
+					throw new Error("Failed to fetch articles!");
 				}
 				const data = await response.json();
-				console.log("articles = ", data);
 				setArticles(data);
-				console.log("set articles = ", articles);
 			} catch (error) {
 				console.error(error);
 			}

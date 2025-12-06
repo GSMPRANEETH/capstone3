@@ -2,9 +2,9 @@ import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_ENDPOINT } from "../../utls/constants";
-import { ArticlesPayload } from "../../utls/Articles/types";
+import { MatchesPayload } from "../../utls/Matches/types";
 
-export const ArticleDetails: React.FC = () => {
+export const MatchDetails: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
 
 	const navigate = useNavigate();
@@ -12,25 +12,25 @@ export const ArticleDetails: React.FC = () => {
 		setIsOpen(false);
 		navigate("../");
 	};
-	const { articleID } = useParams();
-	type ArticleWithContent = ArticlesPayload & { content: string };
+	const { matchID } = useParams();
+	type MatchDetails = MatchesPayload & {score: Record<string, string>, startsAt: string, playingTeam: number, story: string,  };
 
-	const [article, setArticle] = useState<ArticleWithContent>(
-		{} as ArticleWithContent
+	const [match, setMatch] = useState<MatchDetails>(
+		{} as MatchDetails
 	);
 	const fetchDetails = async () => {
-		const id = articleID;
+		const id = matchID;
 		try {
-			const response = await fetch(`${API_ENDPOINT}/articles/${id}`, {
+			const response = await fetch(`${API_ENDPOINT}/matches/${id}`, {
 				method: "GET",
 				headers: { "Content-type": "application/json" },
 			});
 
 			if (!response.ok) {
-				throw new Error("Sign-in failed!");
+				throw new Error("Failed to fetch match details!");
 			}
 			const data = await response.json();
-			setArticle(data);
+			setMatch(data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -69,20 +69,22 @@ export const ArticleDetails: React.FC = () => {
 										as="h3"
 										className="text-lg font-medium leading-6 text-gray-900"
 									>
-										Article details
+										Match details
 									</Dialog.Title>
 
 									<div className="mt-2">
-										<p>Title: {article?.title}</p>
-										<p>Sport: {article?.sport?.name}</p>
-										<p>Date: {article?.date}</p>
-										<p>Summary: {article?.summary}</p>
-										<p>Content: {article?.content}</p>
-										<img src={article?.thumbnail} alt={article?.title} />
+										<p>Name: {match?.name}</p>
+										<p>Sport: {match?.sportName}</p>
+										<p>Started: {match?.startsAt}</p>
+										<p>Ends: {match?.endsAt}</p>
+										{match?.isRunning && <p>Live</p>}
+										<p>Story: {match?.story}</p>
 										<p>Teams:</p>
 										<ul className="list-disc list-inside ml-4">
-											{article?.teams?.map((team) => (
-												<li key={team.id}>{team.name}</li>
+											{match?.teams?.map((team) => (
+												<li key={team.id}>
+													{team.name} : {match?.score[team.name]}
+												</li>
 											))}
 										</ul>
 										<div>

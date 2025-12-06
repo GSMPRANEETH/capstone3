@@ -5,11 +5,23 @@ import {
 	MenuButton,
 	MenuItem,
 	MenuItems,
+	Switch,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ThemeContext } from "../contexts/Theme/ThemeContext";
 
 export default function Example() {
 	const isAuth = !!localStorage.getItem("authToken");
+	const navigate = useNavigate();
+	const { theme, setTheme } = useContext(ThemeContext);
+	const [enabled, setEnabled] = useState(theme === "light" ? false : true);
+
+	const toggleTheme = () => {
+		setEnabled(!enabled);
+		setTheme(enabled ? "light" : "dark");
+	};
 	return (
 		<Disclosure
 			as="nav"
@@ -32,16 +44,31 @@ export default function Example() {
 							/>
 						</DisclosureButton>
 					</div>
-					<div className="flex flex-1 justify-center sm:items-stretch">
+					<Link to="/" className="flex flex-1 justify-center sm:items-stretch">
 						<div className="flex shrink-0 items-center">
 							<p className="text-5xl font-semibold">Sportify</p>
 						</div>
-					</div>
+					</Link>
 					<div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+						<Switch
+							checked={enabled}
+							onChange={toggleTheme}
+							className={`${enabled ? "bg-slate-500" : "bg-slate-200"}
+              relative inline-flex h-[24px] w-[100px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 mr-4`}
+						>
+							<span
+								aria-hidden="true"
+								className={`${enabled ? "translate-x-20" : "translate-x-0"}
+                pointer-events-none inline-block h-[20px] w-[20px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+							/>
+						</Switch>
 						{isAuth && (
-							<button
+							<Disclosure.Button
 								type="button"
-								className="relative rounded-full p-1 text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 dark:hover:text-white"
+								className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+								onClick={() => {
+									navigate("/preferences");
+								}}
 							>
 								<span className="absolute -inset-1.5" />
 								<span className="sr-only">Set Preferences</span>
@@ -64,7 +91,7 @@ export default function Example() {
 										d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
 									/>
 								</svg>
-							</button>
+							</Disclosure.Button>
 						)}
 
 						{/* Profile dropdown */}
@@ -92,14 +119,16 @@ export default function Example() {
 								transition
 								className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
 							>
-								<MenuItem>
-									<a
-										href="/user"
-										className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5"
-									>
-										Profile
-									</a>
-								</MenuItem>
+								{isAuth && (
+									<MenuItem>
+										<a
+											href="/user"
+											className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5"
+										>
+											Profile
+										</a>
+									</MenuItem>
+								)}
 								<MenuItem>
 									{isAuth ? (
 										<a

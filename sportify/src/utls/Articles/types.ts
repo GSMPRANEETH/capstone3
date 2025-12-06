@@ -2,7 +2,7 @@ interface Sport {
 	id: number;
 	name: string;
 }
-interface Teams {
+export interface Teams {
 	id: number;
 	name: string;
 }

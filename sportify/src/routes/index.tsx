@@ -5,8 +5,8 @@ import Signup from "../views/Signup";
 import Logout from "../views/Signout";
 import { Home } from "../views/Home";
 import { Profile } from "../views/Profile";
-import { Articles } from "../views/Articles";
 import { ArticleDetails } from "../views/Articles/ArticleDetails";
+import { MatchDetails } from "../views/Matches/MatchDetails";
 
 const router = createBrowserRouter([
 	{ path: "/signin", element: <Signin /> },
@@ -24,6 +24,14 @@ const router = createBrowserRouter([
 				children: [
 					{ index: true, element: <Navigate to="../" replace /> },
 					{ path: ":articleID", element: <ArticleDetails /> },
+				],
+			},
+			{
+				path: "/match",
+				element: <Home />,
+				children: [
+					{ index: true, element: <Navigate to="../" replace /> },
+					{ path: ":matchID", element: <MatchDetails /> },
 				],
 			},
 			{ path: "*", element: <>Undefined yet</> },
