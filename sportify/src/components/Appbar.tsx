@@ -67,7 +67,7 @@ export default function Example() {
 								type="button"
 								className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
 								onClick={() => {
-									navigate("/preferences");
+									navigate("user/preferences");
 								}}
 							>
 								<span className="absolute -inset-1.5" />
@@ -122,7 +122,7 @@ export default function Example() {
 								{isAuth && (
 									<MenuItem>
 										<a
-											href="/user"
+											href="/user/profile"
 											className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5"
 										>
 											Profile

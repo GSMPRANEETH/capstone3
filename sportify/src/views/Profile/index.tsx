@@ -1,28 +1,63 @@
 import { Transition, Dialog } from "@headlessui/react";
-import React, { Fragment, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Fragment } from "react/jsx-runtime";
 import { API_ENDPOINT } from "../../utls/constants";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 export const Profile: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
-
-	const navigate = useNavigate();
-	const closeModal = () => {
-		setIsOpen(false);
-		navigate("../");
-	};
-
+	const [change, setChange] = useState(false);
 	type Preferences = {};
-
-	interface Payload {
+	interface UserPayload {
 		id: number;
 		name: string;
 		email: string;
 		preferences: Preferences;
 	}
 
-	const [user, setUser] = useState<Payload>({} as Payload);
+	interface PasswordPayload {
+		current_password: string;
+		new_password: string;
+	}
+
+	interface FormData {
+		current_password: string;
+		new_password: string;
+		confirm_password: string;
+	}
+
+	const navigate = useNavigate();
+	const closeModal = () => {
+		setIsOpen(false);
+		navigate("../");
+	};
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<FormData>();
+	const onSubmit: SubmitHandler<PasswordPayload> = async (data) => {
+		try {
+			const token = localStorage.getItem("authToken");
+			const response = await fetch(`${API_ENDPOINT}/user/password`, {
+				method: "PATCH",
+				headers: {
+					"Content-type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(data),
+			});
+			if (!response.ok) {
+				throw new Error("Failed to change password!");
+			}
+			alert("Password changed successfully");
+			closeModal();
+		} catch (error) {
+			console.error(error);
+		}
+	};
+	const [user, setUser] = useState<UserPayload>({} as UserPayload);
 	const fetchDetails = async () => {
 		try {
 			const token = localStorage.getItem("authToken");
@@ -43,25 +78,9 @@ export const Profile: React.FC = () => {
 			console.error(error);
 		}
 	};
-	const {
-		register,
-		handleSubmit,
-		reset,
-		formState: { errors },
-	} = useForm<Payload>();
-
 	useEffect(() => {
 		fetchDetails();
-		reset({
-			name: user.name,
-			email: user.email,
-		});
-	}, [user]);
-
-	const onSubmit: SubmitHandler<Payload> = async (data: Payload) => {
-		console.log(data);
-		closeModal();
-	};
+	}, []);
 	return (
 		<>
 			<Transition appear show={isOpen} as={Fragment}>
@@ -93,59 +112,113 @@ export const Profile: React.FC = () => {
 										as="h3"
 										className="text-lg font-medium leading-6 text-gray-900"
 									>
-										User Details
+										Your Profile
 									</Dialog.Title>
 
 									<div className="mt-2">
-										<form onSubmit={handleSubmit(onSubmit)}>
-											<h3>
-												<strong>Name</strong>
-											</h3>
-											<input
-												type="text"
-												placeholder="Enter Name"
-												id="title"
-												{...register("name", { required: true })}
-												className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
-													errors.name
-														? "border-red-500 focus:border-red-500"
-														: ""
-												}`}
-											/>
-											{errors.name && (
-												<span className="text-red-600 dark:text-red-400 mb-2 block">
-													This field is required
-												</span>
-											)}
-											<h3>
-												<strong>Email</strong>
-											</h3>
-											<input
-												type="text"
-												placeholder="Enter Name"
-												id="description"
-												{...register("email")}
-												className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
-													errors.email
-														? "border-red-500 focus:border-red-500"
-														: ""
-												}`}
-											/>
-											{errors.email && (
-												<span className="text-red-600 dark:text-red-400 mb-2 block">
-													Invalid Email
-												</span>
-											)}
-										</form>
-										<div>
-											<button
-												type="submit"
-												onClick={closeModal}
-												className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-											>
-												Close
-											</button>
+										<div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+											<p className="text-lg mb-2">
+												<strong>Name:</strong> {user.name}
+											</p>
+											<p className="text-lg mb-2">
+												<strong>Email:</strong> {user.email}
+											</p>
 										</div>
+										{!change && (
+											<div>
+												<button
+													type="button"
+													onClick={closeModal}
+													className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+												>
+													Close
+												</button>
+												<button
+													type="button"
+													onClick={() => setChange(true)}
+													className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+												>
+													Change Password
+												</button>
+											</div>
+										)}
+										{change && (
+											<form onSubmit={handleSubmit(onSubmit)}>
+												<h3>
+													<strong>Current Password</strong>
+												</h3>
+												<input
+													type="password"
+													placeholder="Enter Current Password"
+													id="current_password"
+													{...register("current_password", { required: true })}
+													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+														errors.current_password
+															? "border-red-500 focus:border-red-500"
+															: ""
+													}`}
+												/>
+												{errors.current_password && (
+													<span className="text-red-600 dark:text-red-400 mb-2 block">
+														Enter your current password
+													</span>
+												)}
+												<h3>
+													<strong>New Password</strong>
+												</h3>
+												<input
+													type="password"
+													placeholder="Enter New Password"
+													id="new_password"
+													{...register("new_password", { required: true })}
+													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+														errors.new_password
+															? "border-red-500 focus:border-red-500"
+															: ""
+													}`}
+												/>
+												{errors.new_password && (
+													<span className="text-red-600 dark:text-red-400 mb-2 block">
+														This field is required
+													</span>
+												)}
+												<h3>
+													<strong>Confirm Password</strong>
+												</h3>
+												<input
+													type="password"
+													placeholder="Enter Confirm Password"
+													id="confirm_password"
+													{...register("confirm_password", { required: true })}
+													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+														errors.confirm_password
+															? "border-red-500 focus:border-red-500"
+															: ""
+													}`}
+												/>
+												{errors.confirm_password && (
+													<span className="text-red-600 dark:text-red-400 mb-2 block">
+														This field is required
+													</span>
+												)}
+
+												<div>
+													<button
+														type="button"
+														onClick={closeModal}
+														className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+													>
+														Close
+													</button>
+													<button
+														type="submit"
+														className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+													>
+														Save Changes
+													</button>
+												</div>
+											</form>
+										)}
 									</div>
 								</Dialog.Panel>
 							</Transition.Child>

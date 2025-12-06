@@ -7,6 +7,7 @@ import { Home } from "../views/Home";
 import { Profile } from "../views/Profile";
 import { ArticleDetails } from "../views/Articles/ArticleDetails";
 import { MatchDetails } from "../views/Matches/MatchDetails";
+import { Preferences } from "../views/Preferences";
 
 const router = createBrowserRouter([
 	{ path: "/signin", element: <Signin /> },
@@ -17,7 +18,15 @@ const router = createBrowserRouter([
 		element: <AccountLayout />,
 		children: [
 			{ index: true, element: <Home /> },
-			{ path: "/user", element: <Profile /> },
+			{
+				path: "/user",
+				element: <Home />,
+				children: [
+					{ index: true, element: <Navigate to="../" replace /> },
+					{ path: "profile", element: <Profile /> },
+					{ path: "preferences", element: <Preferences /> },
+				],
+			},
 			{
 				path: "/article",
 				element: <Home />,
