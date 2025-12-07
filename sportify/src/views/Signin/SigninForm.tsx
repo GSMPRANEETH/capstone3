@@ -20,7 +20,7 @@ const SigninForm: React.FC = () => {
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
 		const email = data.email;
 		const password = data.password;
-		signInUser(email, password);
+		await signInUser(email, password);
 		navigate("/");
 	};
 

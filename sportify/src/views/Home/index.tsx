@@ -7,9 +7,12 @@ import { getUserPreferences } from "../../contexts/Preferences/actions";
 import { usePreferencesDispatch } from "../../contexts/Preferences/context";
 export const Home: React.FC = () => {
 	const preferencesDispatch = usePreferencesDispatch();
+	const isAuth = !!localStorage.getItem("isAuth");
 	useEffect(() => {
-		getUserPreferences(preferencesDispatch);
-	}, []);
+		if (isAuth) {
+			getUserPreferences(preferencesDispatch);
+		}
+	}, [isAuth]);
 	return (
 		<>
 			<Matches />

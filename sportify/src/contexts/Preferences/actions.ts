@@ -49,7 +49,6 @@ export const updateUserPreferences = async (
 		}
 		const data = await response.json();
 		dispatch({ type: "UPDATE_PREFERENCES_SUCCESS", payload: data.preferences });
-		console.log("Preferences updated:", data.preferences);
 	} catch (error) {
 		console.error(error);
 		dispatch({

@@ -19,7 +19,6 @@ const SignupForm: React.FC = () => {
 	} = useForm<Inputs>();
 
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
-		console.log(data);
 		const name = data.userName;
 		const email = data.userEmail;
 		const password = data.userPassword;

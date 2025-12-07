@@ -4,6 +4,7 @@ import { Sport } from "../../contexts/Sports/types";
 import { listTeams } from "../../contexts/Teams/actions";
 import { Team } from "../../contexts/Teams/types";
 import { usePreferencesState } from "../../contexts/Preferences/context";
+import { FavList } from "./FavList";
 
 export const Favourites: React.FC = () => {
 	const [sports, setSports] = useState<Sport[]>([]);
@@ -12,17 +13,21 @@ export const Favourites: React.FC = () => {
 	const obtainSports = async () => {
 		const sportsData = await listSports();
 		const preferredSports = preferencesState?.preferences?.sports || [];
-		const filteredSports = sportsData.filter((sport: Sport) =>
-			preferredSports.includes(sport.id)
-		);
+		const filteredSports =
+			preferredSports.length > 0
+				? sportsData.filter((sport: Sport) =>
+						preferredSports.includes(sport.id)
+				  )
+				: sportsData;
 		setSports(filteredSports);
 	};
 	const obtainTeams = async () => {
 		const teamsData = await listTeams();
 		const preferredTeams = preferencesState?.preferences?.teams || [];
-		const filteredTeams = teamsData.filter((team: Team) =>
-			preferredTeams.includes(team.id)
-		);
+		const filteredTeams =
+			preferredTeams.length > 0
+				? teamsData.filter((team: Team) => preferredTeams.includes(team.id))
+				: teamsData;
 		setTeams(filteredTeams);
 	};
 	useEffect(() => {
@@ -55,6 +60,7 @@ export const Favourites: React.FC = () => {
 					))}
 				</select>
 			</>
+			<FavList />
 		</>
 	);
 };
