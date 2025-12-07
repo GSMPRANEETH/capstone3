@@ -4,22 +4,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
 import { API_ENDPOINT } from "../../utls/constants";
 import { SubmitHandler, useForm } from "react-hook-form";
+import {
+	getUserDetails,
+	updateUserPassword,
+} from "../../contexts/Profile/actions";
+import { PasswordPayload, UserPayload } from "../../contexts/Profile/types";
 
 export const Profile: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
 	const [change, setChange] = useState(false);
-	type Preferences = {};
-	interface UserPayload {
-		id: number;
-		name: string;
-		email: string;
-		preferences: Preferences;
-	}
-
-	interface PasswordPayload {
-		current_password: string;
-		new_password: string;
-	}
 
 	interface FormData {
 		current_password: string;
@@ -38,48 +31,17 @@ export const Profile: React.FC = () => {
 		formState: { errors },
 	} = useForm<FormData>();
 	const onSubmit: SubmitHandler<PasswordPayload> = async (data) => {
-		try {
-			const token = localStorage.getItem("authToken");
-			const response = await fetch(`${API_ENDPOINT}/user/password`, {
-				method: "PATCH",
-				headers: {
-					"Content-type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify(data),
-			});
-			if (!response.ok) {
-				throw new Error("Failed to change password!");
-			}
-			alert("Password changed successfully");
-			closeModal();
-		} catch (error) {
-			console.error(error);
-		}
+		await updateUserPassword(data);
+		alert("Password changed successfully");
+		closeModal();
 	};
 	const [user, setUser] = useState<UserPayload>({} as UserPayload);
-	const fetchDetails = async () => {
-		try {
-			const token = localStorage.getItem("authToken");
-			const response = await fetch(`${API_ENDPOINT}/user`, {
-				method: "GET",
-				headers: {
-					"Content-type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-			});
-
-			if (!response.ok) {
-				throw new Error("Failed to fetch user details!");
-			}
-			const data = await response.json();
-			setUser(data);
-		} catch (error) {
-			console.error(error);
-		}
+	const obtainUser = async () => {
+		const userData = await getUserDetails();
+		setUser(userData);
 	};
 	useEffect(() => {
-		fetchDetails();
+		obtainUser();
 	}, []);
 	return (
 		<>

@@ -3,6 +3,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_ENDPOINT } from "../../utls/constants";
 import { ArticlesPayload } from "../../utls/Articles/types";
+import { showArticle } from "../../contexts/Articles/actions";
 
 export const ArticleDetails: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
@@ -18,25 +19,14 @@ export const ArticleDetails: React.FC = () => {
 	const [article, setArticle] = useState<ArticleWithContent>(
 		{} as ArticleWithContent
 	);
-	const fetchDetails = async () => {
-		const id = articleID;
-		try {
-			const response = await fetch(`${API_ENDPOINT}/articles/${id}`, {
-				method: "GET",
-				headers: { "Content-type": "application/json" },
-			});
 
-			if (!response.ok) {
-				throw new Error("Sign-in failed!");
-			}
-			const data = await response.json();
-			setArticle(data);
-		} catch (error) {
-			console.error(error);
-		}
+	const obtainDetails = async () => {
+		const details = await showArticle(articleID ?? "");
+		setArticle(details);
 	};
+
 	useEffect(() => {
-		fetchDetails();
+		obtainDetails();
 	}, []);
 	return (
 		<>

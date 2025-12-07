@@ -3,6 +3,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_ENDPOINT } from "../../utls/constants";
 import { MatchesPayload } from "../../utls/Matches/types";
+import { showMatch } from "../../contexts/Matches/actions";
 
 export const MatchDetails: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
@@ -13,30 +14,22 @@ export const MatchDetails: React.FC = () => {
 		navigate("../");
 	};
 	const { matchID } = useParams();
-	type MatchDetails = MatchesPayload & {score: Record<string, string>, startsAt: string, playingTeam: number, story: string,  };
-
-	const [match, setMatch] = useState<MatchDetails>(
-		{} as MatchDetails
-	);
-	const fetchDetails = async () => {
-		const id = matchID;
-		try {
-			const response = await fetch(`${API_ENDPOINT}/matches/${id}`, {
-				method: "GET",
-				headers: { "Content-type": "application/json" },
-			});
-
-			if (!response.ok) {
-				throw new Error("Failed to fetch match details!");
-			}
-			const data = await response.json();
-			setMatch(data);
-		} catch (error) {
-			console.error(error);
-		}
+	type MatchDetails = MatchesPayload & {
+		score: Record<string, string>;
+		startsAt: string;
+		playingTeam: number;
+		story: string;
 	};
+
+	const [match, setMatch] = useState<MatchDetails>({} as MatchDetails);
+
+	const obtainDetails = async () => {
+		const details = await showMatch(matchID ?? "");
+		setMatch(details);
+	};
+
 	useEffect(() => {
-		fetchDetails();
+		obtainDetails();
 	}, []);
 	return (
 		<>

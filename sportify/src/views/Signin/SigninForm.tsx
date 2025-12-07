@@ -1,12 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { API_ENDPOINT } from "../../utls/constants";
+import { signInUser } from "../../contexts/Authentication/actions";
 
 const SigninForm: React.FC = () => {
 	type Inputs = {
-		email: String;
-		password: String;
+		email: string;
+		password: string;
 	};
 
 	const {
@@ -20,24 +20,8 @@ const SigninForm: React.FC = () => {
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
 		const email = data.email;
 		const password = data.password;
-
-		try {
-			const response = await fetch(`${API_ENDPOINT}/users/sign_in`, {
-				method: "POST",
-				headers: { "Content-type": "application/json" },
-				body: JSON.stringify({ email, password }),
-			});
-
-			if (!response.ok) {
-				throw new Error("Sign-in failed!");
-			}
-			const data = await response.json();
-			localStorage.setItem("authToken", data.auth_token);
-			localStorage.setItem("userData", JSON.stringify(data.user));
-			navigate("/");
-		} catch (error) {
-			console.error(error);
-		}
+		signInUser(email, password);
+		navigate("/");
 	};
 
 	return (

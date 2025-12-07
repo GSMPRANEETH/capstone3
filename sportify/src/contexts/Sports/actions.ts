@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from "../../utls/constants";
 
-export const fetchSports = async () => {
+export const listSports = async () => {
 	try {
 		const response = await fetch(`${API_ENDPOINT}/sports`, {
 			method: "GET",

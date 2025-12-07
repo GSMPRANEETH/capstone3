@@ -1,29 +1,18 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import { MatchesPayload } from "../../utls/Matches/types";
-import { API_ENDPOINT } from "../../utls/constants";
 import { Link } from "react-router-dom";
+import { listMatches } from "../../contexts/Matches/actions";
 
 export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 	(props, ref) => {
 		const [matches, setMatches] = useState<MatchesPayload[]>([]);
-		const fetchMatches = async () => {
-			try {
-				const response = await fetch(`${API_ENDPOINT}/matches`, {
-					method: "GET",
-					headers: { "Content-type": "application/json" },
-				});
 
-				if (!response.ok) {
-					throw new Error("Failed to fetch matches!");
-				}
-				const data = await response.json();
-				setMatches(data.matches);
-			} catch (error) {
-				console.error(error);
-			}
+		const obtainMatches = async () => {
+			const data = await listMatches();
+			setMatches(data);
 		};
 		useEffect(() => {
-			fetchMatches();
+			obtainMatches();
 		}, []);
 		return (
 			<div ref={ref} {...props} className="flex gap-4 overflow-x-auto pb-4">

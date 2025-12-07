@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { fetchSports } from "../../contexts/Sports/actions";
+import { listSports } from "../../contexts/Sports/actions";
 import { Sport } from "../../contexts/Sports/types";
-import { fetchTeams } from "../../contexts/Teams/actions";
+import { listTeams } from "../../contexts/Teams/actions";
 import { Team } from "../../contexts/Teams/types";
 
 export const Favourites: React.FC = () => {
@@ -9,11 +9,11 @@ export const Favourites: React.FC = () => {
 	const [teams, setTeams] = useState<Team[]>([]);
 
 	const obtainSports = async () => {
-		const sportsData = await fetchSports();
+		const sportsData = await listSports();
 		setSports(sportsData);
 	};
 	const obtainTeams = async () => {
-		const teamsData = await fetchTeams();
+		const teamsData = await listTeams();
 		setTeams(teamsData);
 	};
 	useEffect(() => {

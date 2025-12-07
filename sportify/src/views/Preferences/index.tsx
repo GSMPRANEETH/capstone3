@@ -2,11 +2,15 @@ import { useState, useEffect, Fragment } from "react";
 import { API_ENDPOINT } from "../../utls/constants";
 import { Transition, Dialog } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
-import { fetchSports } from "../../contexts/Sports/actions";
+import { listSports } from "../../contexts/Sports/actions";
 import { Sport } from "../../contexts/Sports/types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Team } from "../../contexts/Teams/types";
-import { fetchTeams } from "../../contexts/Teams/actions";
+import { listTeams } from "../../contexts/Teams/actions";
+import {
+	getUserPreferences,
+	updateUserPreferences,
+} from "../../contexts/Preferences/actions";
 
 export const Preferences: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
@@ -15,32 +19,17 @@ export const Preferences: React.FC = () => {
 	const [teams, setTeams] = useState<Team[]>([]);
 
 	const obtainSports = async () => {
-		const sportsData = await fetchSports();
+		const sportsData = await listSports();
 		setSports(sportsData);
 	};
 	const obtainTeams = async () => {
-		const teamsData = await fetchTeams();
+		const teamsData = await listTeams();
 		setTeams(teamsData);
 	};
 
-	const fetchPreferences = async () => {
-		try {
-			const token = localStorage.getItem("authToken");
-			const response = await fetch(`${API_ENDPOINT}/user/preferences`, {
-				method: "GET",
-				headers: {
-					"Content-type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			if (!response.ok) {
-				throw new Error("Failed to fetch preferences!");
-			}
-			const data = await response.json();
-			setPreferences(data.preferences);
-		} catch (error) {
-			console.error(error);
-		}
+	const obtainPreferences = async () => {
+		const data = await getUserPreferences();
+		setPreferences(data);
 	};
 	const navigate = useNavigate();
 	const closeModal = () => {
@@ -64,28 +53,12 @@ export const Preferences: React.FC = () => {
 			.filter(([_, value]) => value)
 			.map(([key, _]) => Number(key));
 		const preferencesPayload = { teams, sports };
-		console.log("Preferences payload:", preferencesPayload);
-		try {
-			const token = localStorage.getItem("authToken");
-			const response = await fetch(`${API_ENDPOINT}/user/preferences`, {
-				method: "PATCH",
-				headers: {
-					"Content-type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify({ preferences: preferencesPayload }),
-			});
-			if (!response.ok) {
-				throw new Error("Failed to update preferences!");
-			}
-			alert("Preferences updated successfully");
-			closeModal();
-		} catch (error) {
-			console.error(error);
-		}
+		updateUserPreferences(preferencesPayload);
+		alert("Preferences updated successfully");
+		closeModal();
 	};
 	useEffect(() => {
-		fetchPreferences();
+		obtainPreferences();
 		obtainSports();
 		obtainTeams();
 	}, []);

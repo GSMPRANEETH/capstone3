@@ -5,6 +5,6 @@ const Logout: React.FC = () => {
 	useEffect(() => {
 		localStorage.clear();
 	});
-	return <Navigate to="/signin" />;
+	return <Navigate to="/" />;
 };
 export default Logout;
