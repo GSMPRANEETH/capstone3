@@ -1,5 +1,4 @@
 import { useState, useEffect, Fragment } from "react";
-import { API_ENDPOINT } from "../../utls/constants";
 import { Transition, Dialog } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { listSports } from "../../contexts/Sports/actions";
@@ -11,6 +10,10 @@ import {
 	getUserPreferences,
 	updateUserPreferences,
 } from "../../contexts/Preferences/actions";
+import {
+	usePreferencesDispatch,
+	usePreferencesState,
+} from "../../contexts/Preferences/context";
 
 export const Preferences: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
@@ -27,20 +30,14 @@ export const Preferences: React.FC = () => {
 		setTeams(teamsData);
 	};
 
-	const obtainPreferences = async () => {
-		const data = await getUserPreferences();
-		setPreferences(data);
-	};
+	const preferencesState = usePreferencesState();
+	const preferencesDispatch = usePreferencesDispatch();
 	const navigate = useNavigate();
 	const closeModal = () => {
 		setIsOpen(false);
 		navigate("../");
 	};
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<Payload>();
+	const { register, handleSubmit } = useForm<Payload>();
 	interface Payload {
 		teams: number[];
 		sports: number[];
@@ -53,12 +50,12 @@ export const Preferences: React.FC = () => {
 			.filter(([_, value]) => value)
 			.map(([key, _]) => Number(key));
 		const preferencesPayload = { teams, sports };
-		updateUserPreferences(preferencesPayload);
+		updateUserPreferences(preferencesDispatch, preferencesPayload);
 		alert("Preferences updated successfully");
 		closeModal();
 	};
 	useEffect(() => {
-		obtainPreferences();
+		setPreferences(preferencesState?.preferences);
 		obtainSports();
 		obtainTeams();
 	}, []);

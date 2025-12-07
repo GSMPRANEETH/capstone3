@@ -1,7 +1,8 @@
 import { API_ENDPOINT } from "../../utls/constants";
 
-export const listArticles = async () => {
+export const listArticles = async (dispatch: any) => {
 	try {
+		dispatch({ type: "LIST_ARTICLES_REQUEST" });
 		const response = await fetch(`${API_ENDPOINT}/articles`, {
 			method: "GET",
 			headers: { "Content-type": "application/json" },
@@ -11,8 +12,12 @@ export const listArticles = async () => {
 			throw new Error("Failed to fetch articles!");
 		}
 		const data = await response.json();
-		return data;
+		dispatch({ type: "LIST_ARTICLES_SUCCESS", payload: data });
 	} catch (error) {
+		dispatch({
+			type: "LIST_ARTICLES_FAILURE",
+			payload: (error as Error).message,
+		});
 		console.error(error);
 	}
 };

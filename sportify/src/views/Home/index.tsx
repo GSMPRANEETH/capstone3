@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Articles } from "../Articles";
 import { Matches } from "../Matches";
 import { Outlet } from "react-router-dom";
 import { Favourites } from "../Favourites";
+import { getUserPreferences } from "../../contexts/Preferences/actions";
+import { usePreferencesDispatch } from "../../contexts/Preferences/context";
 export const Home: React.FC = () => {
+	const preferencesDispatch = usePreferencesDispatch();
+	useEffect(() => {
+		getUserPreferences(preferencesDispatch);
+	}, []);
 	return (
 		<>
 			<Matches />

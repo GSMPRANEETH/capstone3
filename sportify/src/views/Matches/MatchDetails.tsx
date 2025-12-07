@@ -2,7 +2,7 @@ import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_ENDPOINT } from "../../utls/constants";
-import { MatchesPayload } from "../../utls/Matches/types";
+import { MatchesPayload } from "../../contexts/Matches/types";
 import { showMatch } from "../../contexts/Matches/actions";
 
 export const MatchDetails: React.FC = () => {

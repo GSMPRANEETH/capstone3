@@ -2,7 +2,10 @@ import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_ENDPOINT } from "../../utls/constants";
-import { ArticlesPayload } from "../../utls/Articles/types";
+import {
+	ArticlesPayload,
+	ArticleWithContent,
+} from "../../contexts/Articles/types";
 import { showArticle } from "../../contexts/Articles/actions";
 
 export const ArticleDetails: React.FC = () => {
@@ -14,7 +17,6 @@ export const ArticleDetails: React.FC = () => {
 		navigate("../");
 	};
 	const { articleID } = useParams();
-	type ArticleWithContent = ArticlesPayload & { content: string };
 
 	const [article, setArticle] = useState<ArticleWithContent>(
 		{} as ArticleWithContent
