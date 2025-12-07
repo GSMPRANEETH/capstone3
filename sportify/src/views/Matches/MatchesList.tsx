@@ -23,47 +23,53 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		const obtainSports = async () => {
 			const sportsData = await listSports();
 			const preferredSports = preferencesState?.preferences?.sports || [];
-			const filteredSports =
-				preferredSports.length > 0
-					? sportsData.filter((sport: Sport) =>
-							preferredSports.includes(sport.id)
-					  )
-					: sportsData;
+			const filteredSports = isAuth
+				? sportsData.filter((sport: Sport) =>
+						preferredSports.includes(sport.id)
+				  )
+				: sportsData;
 			setSports(filteredSports);
 		};
 		useEffect(() => {
 			listMatches(matchesDispatch);
-			obtainSports();
 		}, []);
 		useEffect(() => {
+			obtainSports();
+			const preferredTeams = preferencesState?.preferences?.teams || [];
 			const liveMatches = matchesState?.matches.filter(
 				(match) => match.isRunning
 			);
 			if (isAuth) {
-				const preferredTeams = preferencesState?.preferences?.teams || [];
+				let filteredMatches: MatchesPayload[] = [];
 
-				const filteredMatches = liveMatches?.filter((match) => {
-					const sportMatch =
-						sports.length === 0 ||
-						sports.some((sport) => sport.name === match.sportName);
-					const teamMatch =
-						preferredTeams.length === 0 ||
-						match.teams.some((team) =>
-							preferredTeams.some((preferredTeam) => preferredTeam === team.id)
-						);
-					return sportMatch && teamMatch;
-				});
+				if (sports.length > 0) {
+					filteredMatches =
+						liveMatches?.filter((match) =>
+							sports.some((sport) => sport.name === match.sportName)
+						) || [];
+				}
 
-				setMatches(filteredMatches || []);
+				if (preferredTeams.length > 0) {
+					const teamMatchedMatches =
+						liveMatches?.filter(
+							(match) =>
+								match.teams.some((team) => preferredTeams.includes(team.id)) &&
+								!filteredMatches.some((m) => m.id === match.id)
+						) || [];
+					filteredMatches = [...filteredMatches, ...teamMatchedMatches];
+				}
+
+				setMatches(filteredMatches);
 			} else {
 				setMatches(liveMatches || []);
 			}
 		}, [sports, preferencesState?.preferences?.teams, matchesState?.matches]);
-		if (matches.length === 0) {
-			return <p>No live matches available.</p>;
-		}
+
 		if (matchesState?.isLoading) {
 			return <p>Loading matches...</p>;
+		}
+		if (matches.length === 0) {
+			return <p>No live matches available.</p>;
 		}
 		return (
 			<div ref={ref} {...props} className="flex gap-4 overflow-x-auto pb-4">
@@ -73,10 +79,8 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 						to={`match/${match.id}`}
 						className="flex-shrink-0 border border-gray-300 rounded-lg p-4 min-w-max"
 					>
+						<p className="font-italic">{match.sportName}</p>
 						<p className="font-semibold">{match.name}</p>
-						<p className="font-italic">Sport: {match.sportName}</p>
-						<p>Location: {match.location}</p>
-						<p>Status: {match.isRunning ? "Running" : "Not Running"}</p>
 					</Link>
 				))}
 			</div>

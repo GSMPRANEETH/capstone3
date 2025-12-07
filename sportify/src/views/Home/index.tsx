@@ -7,7 +7,7 @@ import { getUserPreferences } from "../../contexts/Preferences/actions";
 import { usePreferencesDispatch } from "../../contexts/Preferences/context";
 export const Home: React.FC = () => {
 	const preferencesDispatch = usePreferencesDispatch();
-	const isAuth = !!localStorage.getItem("isAuth");
+	const isAuth = !!localStorage.getItem("authToken");
 	useEffect(() => {
 		if (isAuth) {
 			getUserPreferences(preferencesDispatch);

@@ -54,19 +54,31 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			preferencesState?.preferences?.teams,
 			articleState?.articles,
 		]);
-		if (articles.length === 0) {
-			return <p>No articles available.</p>;
-		}
+		
 		if (articleState?.isLoading) {
 			return <p>Loading articles...</p>;
 		}
+		if (articles.length === 0) {
+			return <p>No articles available.</p>;
+		}
 		return (
-			<div ref={ref} {...props}>
+			<div ref={ref} {...props} className="max-h-[63vh] overflow-y-auto">
 				{articles.map((article) => (
 					<Link key={article.id} to={`article/${article.id}`}>
-						<div className="border-b border-gray-300">
-							<p className="font-semibold">Title: {article.title}</p>
-							<p className="font-italic">Sport: {article.sport.name}</p>
+						<div className="flex  border-b border-gray-300 p-4">
+							<div className="border-b border-gray-300 w-3/4">
+								<p className="text-xs">{article.sport.name}</p>
+								<p className="text-xl font-semibold">{article.title}</p>
+								<p className="text-sm text-gray-600 line-clamp-2">
+									{article.summary}
+								</p>
+								<p className="text-xs text-gray-500">{article.date}</p>
+							</div>
+							<img
+								className="h-24 object-cover ml-4 w-1/4"
+								src={article.thumbnail}
+								alt={article.title}
+							/>
 						</div>
 					</Link>
 				))}

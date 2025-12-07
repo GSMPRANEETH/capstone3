@@ -60,101 +60,103 @@ export const Preferences: React.FC = () => {
 		obtainTeams();
 	}, []);
 
-	return (
-		<>
-			<Transition appear show={isOpen} as={Fragment}>
-				<Dialog as="div" className="relative z-10" onClose={closeModal}>
-					<Transition.Child
-						as={Fragment}
-						enter="ease-out duration-300"
-						enterFrom="opacity-0"
-						enterTo="opacity-100"
-						leave="ease-in duration-200"
-						leaveFrom="opacity-100"
-						leaveTo="opacity-0"
-					>
-						<div className="fixed inset-0 bg-black bg-opacity-25" />
-					</Transition.Child>
-					<div className="fixed inset-0 overflow-y-auto">
-						<div className="flex min-h-full items-center justify-center p-4 text-center">
-							<Transition.Child
-								as={Fragment}
-								enter="ease-out duration-300"
-								enterFrom="opacity-0 scale-95"
-								enterTo="opacity-100 scale-100"
-								leave="ease-in duration-200"
-								leaveFrom="opacity-100 scale-100"
-								leaveTo="opacity-0 scale-95"
-							>
-								<Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-									<Dialog.Title
-										as="h3"
-										className="text-4xl font-medium leading-6 text-gray-900"
-									>
-										Your Preferences
-									</Dialog.Title>
+    return (
+			<>
+				<Transition appear show={isOpen} as={Fragment}>
+					<Dialog as="div" className="relative z-10" onClose={closeModal}>
+						<Transition.Child
+							as={Fragment}
+							enter="ease-out duration-300"
+							enterFrom="opacity-0"
+							enterTo="opacity-100"
+							leave="ease-in duration-200"
+							leaveFrom="opacity-100"
+							leaveTo="opacity-0"
+						>
+							<div className="fixed inset-0 bg-black bg-opacity-25" />
+						</Transition.Child>
+						<div className="fixed inset-0 overflow-y-auto">
+							<div className="flex min-h-full items-center justify-center p-4 text-center">
+								<Transition.Child
+									as={Fragment}
+									enter="ease-out duration-300"
+									enterFrom="opacity-0 scale-95"
+									enterTo="opacity-100 scale-100"
+									leave="ease-in duration-200"
+									leaveFrom="opacity-100 scale-100"
+									leaveTo="opacity-0 scale-95"
+								>
+									<Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+										<Dialog.Title
+											as="h3"
+											className="text-lg font-medium leading-6 text-gray-900"
+										>
+											Preferences
+										</Dialog.Title>
 
-									<div className="mt-2">
-										<form onSubmit={handleSubmit(onSubmit)}>
-											<h3 className="text-2xl mb-2 mt-4">
-												<strong>Favourite Sports</strong>
-											</h3>
-											{sports.map((sport) => (
-												<div key={sport.id} className="flex flex-wrap mb-2">
-													<label className="flex items-center">
-														<input
-															type="checkbox"
-															defaultChecked={preferences?.sports?.includes(
-																sport.id
-															)}
-															{...register(`sports.${sport.id}`)}
-															className="mr-2"
-														/>
-														<span>{sport.name}</span>
-													</label>
+										<div className="mt-2">
+											<form onSubmit={handleSubmit(onSubmit)}>
+												<h3 className="text-xl mb-2 mt-4">
+													<strong>Favourite Sports</strong>
+												</h3>
+												<div className="grid grid-cols-3 gap-4 mb-6">
+													{sports.map((sport) => (
+														<label key={sport.id} className="flex items-center">
+															<input
+																type="checkbox"
+																defaultChecked={preferences?.sports?.includes(
+																	sport.id
+																)}
+																{...register(`sports.${sport.id}`)}
+																className="mr-2"
+															/>
+															<span>{sport.name}</span>
+														</label>
+													))}
 												</div>
-											))}
-											<h3 className="text-2xl mb-2 mt-4">
-												<strong>Favourite Teams</strong>
-											</h3>
-											{teams.map((team) => (
-												<div key={team.id} className="flex flex-wrap mb-2">
-													<label className="flex items-center">
-														<input
-															type="checkbox"
-															defaultChecked={preferences?.teams?.includes(
-																team.id
-															)}
-															{...register(`teams.${team.id}`)}
-															className="mr-2"
-														/>
-														<span>{team.name}</span>
-													</label>
+
+												<h3 className="text-xl mb-2 mt-4">
+													<strong>Favourite Teams</strong>
+												</h3>
+												<div className="grid grid-cols-3 gap-4 mb-6">
+													{teams.map((team) => (
+														<label key={team.id} className="flex items-center">
+															<input
+																type="checkbox"
+																defaultChecked={preferences?.teams?.includes(
+																	team.id
+																)}
+																{...register(`teams.${team.id}`)}
+																className="mr-2"
+															/>
+															<span>{team.name}</span>
+														</label>
+													))}
 												</div>
-											))}
-											<div>
-												<button
-													type="button"
-													onClick={closeModal}
-													className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-												>
-													Close
-												</button>
-												<button
-													type="submit"
-													className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
-												>
-													Save Changes
-												</button>
-											</div>
-										</form>
-									</div>
-								</Dialog.Panel>
-							</Transition.Child>
+
+												<div className="flex justify-end gap-2 mt-4">
+													<button
+														type="button"
+														onClick={closeModal}
+														className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+													>
+														Cancel
+													</button>
+													<button
+														type="submit"
+														className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+													>
+														Save
+													</button>
+												</div>
+											</form>
+										</div>
+									</Dialog.Panel>
+								</Transition.Child>
+							</div>
 						</div>
-					</div>
-				</Dialog>
-			</Transition>
-		</>
-	);
+					</Dialog>
+				</Transition>
+			</>
+		);
 };

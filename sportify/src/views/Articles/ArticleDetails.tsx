@@ -61,16 +61,16 @@ export const ArticleDetails: React.FC = () => {
 										as="h3"
 										className="text-lg font-medium leading-6 text-gray-900"
 									>
-										Article details
+										{article?.title}
 									</Dialog.Title>
 
 									<div className="mt-2">
-										<p>Title: {article?.title}</p>
+										<img src={article?.thumbnail} alt={article?.title} />
 										<p>Sport: {article?.sport?.name}</p>
 										<p>Date: {article?.date}</p>
 										<p>Summary: {article?.summary}</p>
 										<p>Content: {article?.content}</p>
-										<img src={article?.thumbnail} alt={article?.title} />
+
 										<p>Teams:</p>
 										<ul className="list-disc list-inside ml-4">
 											{article?.teams?.map((team) => (

@@ -23,7 +23,7 @@ const SignupForm: React.FC = () => {
 		const email = data.userEmail;
 		const password = data.userPassword;
 		await createUser(name, email, password);
-		navigate("/");
+		navigate("/user/preferences");
 	};
 
 	return (

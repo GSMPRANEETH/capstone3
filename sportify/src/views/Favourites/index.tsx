@@ -10,24 +10,21 @@ export const Favourites: React.FC = () => {
 	const [sports, setSports] = useState<Sport[]>([]);
 	const [teams, setTeams] = useState<Team[]>([]);
 	const preferencesState = usePreferencesState();
+	const isAuth = !!localStorage.getItem("authToken");
 	const obtainSports = async () => {
 		const sportsData = await listSports();
 		const preferredSports = preferencesState?.preferences?.sports || [];
-		const filteredSports =
-			preferredSports.length > 0
-				? sportsData.filter((sport: Sport) =>
-						preferredSports.includes(sport.id)
-				  )
-				: sportsData;
+		const filteredSports = isAuth
+			? sportsData.filter((sport: Sport) => preferredSports.includes(sport.id))
+			: sportsData;
 		setSports(filteredSports);
 	};
 	const obtainTeams = async () => {
 		const teamsData = await listTeams();
 		const preferredTeams = preferencesState?.preferences?.teams || [];
-		const filteredTeams =
-			preferredTeams.length > 0
-				? teamsData.filter((team: Team) => preferredTeams.includes(team.id))
-				: teamsData;
+		const filteredTeams = isAuth
+			? teamsData.filter((team: Team) => preferredTeams.includes(team.id))
+			: teamsData;
 		setTeams(filteredTeams);
 	};
 	useEffect(() => {
