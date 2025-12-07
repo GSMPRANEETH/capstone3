@@ -62,17 +62,18 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			return <p>No articles available.</p>;
 		}
 		return (
-			<div ref={ref} {...props} className="max-h-[63vh] overflow-y-auto">
+			<div ref={ref} {...props} className="max-h-[63vh] overflow-y-auto ">
 				{articles.map((article) => (
-					<Link key={article.id} to={`article/${article.id}`}>
-						<div className="flex  border-b border-gray-300 p-4">
-							<div className="border-b border-gray-300 w-3/4">
+					<div key={article.id}>
+						<div className="flex border border-gray-800 p-4">
+							<div className="w-3/4 gap-2 flex flex-col">
 								<p className="text-xs">{article.sport.name}</p>
 								<p className="text-xl font-semibold">{article.title}</p>
-								<p className="text-sm text-gray-600 line-clamp-2">
-									{article.summary}
-								</p>
-								<p className="text-xs text-gray-500">{article.date}</p>
+								<p className="text-sm  line-clamp-2">{article.summary}</p>
+								<div className="flex justify-between items-center w-full">
+									<p className="text-xs">{article.date}</p>
+									<a href={`article/${article.id}`}>Read More</a>
+								</div>
 							</div>
 							<img
 								className="h-24 object-cover ml-4 w-1/4"
@@ -80,7 +81,7 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 								alt={article.title}
 							/>
 						</div>
-					</Link>
+					</div>
 				))}
 			</div>
 		);

@@ -64,8 +64,12 @@ export const ArticleDetails: React.FC = () => {
 										{article?.title}
 									</Dialog.Title>
 
-									<div className="mt-2">
-										<img src={article?.thumbnail} alt={article?.title} />
+									<div className="mt-2 overflow-y-auto max-h-[85vh]">
+										<img
+											className="max-h-60 min-w-full"
+											src={article?.thumbnail}
+											alt={article?.title}
+										/>
 										<p>Sport: {article?.sport?.name}</p>
 										<p>Date: {article?.date}</p>
 										<p>Summary: {article?.summary}</p>
