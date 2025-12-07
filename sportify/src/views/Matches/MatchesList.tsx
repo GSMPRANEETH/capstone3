@@ -6,17 +6,24 @@ import {
 	useMatchesDispatch,
 	useMatchesState,
 } from "../../contexts/Matches/context";
+import { usePreferencesState } from "../../contexts/Preferences/context";
 
 export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 	(props, ref) => {
 		const matchesState = useMatchesState();
 		const matchesDispatch = useMatchesDispatch();
+		const preferencesState = usePreferencesState();
+		const [matches, setMatches] = useState<MatchesPayload[]>([]);
 		useEffect(() => {
 			listMatches(matchesDispatch);
-		}, []);
+			const liveMatches = matchesState?.matches.filter(
+				(match) => match.isRunning
+			);
+			setMatches(liveMatches || []);
+		}, [preferencesState?.preferences]);
 		return (
 			<div ref={ref} {...props} className="flex gap-4 overflow-x-auto pb-4">
-				{matchesState?.matches.map((match) => (
+				{matches.map((match) => (
 					<Link
 						key={match.id}
 						to={`match/${match.id}`}

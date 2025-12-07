@@ -3,23 +3,35 @@ import { listSports } from "../../contexts/Sports/actions";
 import { Sport } from "../../contexts/Sports/types";
 import { listTeams } from "../../contexts/Teams/actions";
 import { Team } from "../../contexts/Teams/types";
+import { usePreferencesState } from "../../contexts/Preferences/context";
 
 export const Favourites: React.FC = () => {
 	const [sports, setSports] = useState<Sport[]>([]);
 	const [teams, setTeams] = useState<Team[]>([]);
-
+	const preferencesState = usePreferencesState();
 	const obtainSports = async () => {
 		const sportsData = await listSports();
-		setSports(sportsData);
+		const preferredSports = preferencesState?.preferences?.sports || [];
+		const filteredSports = sportsData.filter((sport: Sport) =>
+			preferredSports.includes(sport.id)
+		);
+		setSports(filteredSports);
 	};
 	const obtainTeams = async () => {
 		const teamsData = await listTeams();
-		setTeams(teamsData);
+		const preferredTeams = preferencesState?.preferences?.teams || [];
+		const filteredTeams = teamsData.filter((team: Team) =>
+			preferredTeams.includes(team.id)
+		);
+		setTeams(filteredTeams);
 	};
 	useEffect(() => {
 		obtainSports();
 		obtainTeams();
-	}, []);
+	}, [
+		preferencesState?.preferences?.sports,
+		preferencesState?.preferences?.teams,
+	]);
 	return (
 		<>
 			<p className="text-4xl">Favourites</p>
