@@ -73,7 +73,7 @@ export const Preferences: React.FC = () => {
 					"Content-type": "application/json",
 					Authorization: `Bearer ${token}`,
 				},
-				body: JSON.stringify(preferencesPayload),
+				body: JSON.stringify({ preferences: preferencesPayload }),
 			});
 			if (!response.ok) {
 				throw new Error("Failed to update preferences!");
@@ -119,15 +119,15 @@ export const Preferences: React.FC = () => {
 								<Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
 									<Dialog.Title
 										as="h3"
-										className="text-lg font-medium leading-6 text-gray-900"
+										className="text-4xl font-medium leading-6 text-gray-900"
 									>
 										Your Preferences
 									</Dialog.Title>
 
 									<div className="mt-2">
 										<form onSubmit={handleSubmit(onSubmit)}>
-											<h3>
-												<strong>Sports</strong>
+											<h3 className="text-2xl mb-2 mt-4">
+												<strong>Favourite Sports</strong>
 											</h3>
 											{sports.map((sport) => (
 												<div key={sport.id} className="flex flex-wrap mb-2">
@@ -144,8 +144,8 @@ export const Preferences: React.FC = () => {
 													</label>
 												</div>
 											))}
-											<h3>
-												<strong>Teams</strong>
+											<h3 className="text-2xl mb-2 mt-4">
+												<strong>Favourite Teams</strong>
 											</h3>
 											{teams.map((team) => (
 												<div key={team.id} className="flex flex-wrap mb-2">
