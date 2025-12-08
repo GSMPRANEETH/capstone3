@@ -37,7 +37,7 @@ export const Favourites: React.FC = () => {
 		preferencesState?.preferences?.teams,
 	]);
 	return (
-		<div className="gap-4">
+		<div className="gap-4 flex flex-col">
 			<p className="text-4xl">Favourites</p>
 			<div>
 				<p>Sports</p>

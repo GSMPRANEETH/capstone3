@@ -25,6 +25,7 @@ export const MatchCard: React.FC<{ id: number }> = ({ id }) => {
 			state={{ match }}
 			className="border border-gray-300 rounded-lg p-4 max-w-xs"
 		>
+			{match?.isRunning && <p className="text-xs">Live</p>}
 			<p className="font-italic">{match.sportName}</p>
 			<p className="font-semibold">{match.name}</p>
 			{match?.teams?.map((team) => (

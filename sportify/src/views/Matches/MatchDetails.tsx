@@ -50,15 +50,20 @@ export const MatchDetails: React.FC = () => {
 										as="h3"
 										className="text-lg font-medium leading-6 text-gray-900"
 									>
-										Match details
+										{match?.isRunning && <span>Live</span>} Match details
 									</Dialog.Title>
 
 									<div className="mt-2">
 										<p>Name: {match?.name}</p>
 										<p>Sport: {match?.sportName}</p>
-										<p>Started: {match?.startsAt}</p>
-										<p>Ends: {match?.endsAt}</p>
-										{match?.isRunning && <p>Live</p>}
+										<p>
+											Started: {new Date(match?.startsAt).toLocaleDateString()}{" "}
+											{new Date(match?.startsAt).toLocaleTimeString()}
+										</p>
+										<p>
+											Ends: {new Date(match?.endsAt).toLocaleDateString()}{" "}
+											{new Date(match?.endsAt).toLocaleTimeString()}
+										</p>
 										<p>Story: {match?.story}</p>
 										<p>Teams:</p>
 										<ul className="list-disc list-inside ml-4">

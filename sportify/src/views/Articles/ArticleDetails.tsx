@@ -71,7 +71,8 @@ export const ArticleDetails: React.FC = () => {
 											alt={article?.title}
 										/>
 										<p>Sport: {article?.sport?.name}</p>
-										<p>Date: {article?.date}</p>
+										<p>Date: {new Date(article?.date).toLocaleDateString()}</p>
+										<p>Time: {new Date(article?.date).toLocaleTimeString()}</p>
 										<p>Summary: {article?.summary}</p>
 										<p>Content: {article?.content}</p>
 

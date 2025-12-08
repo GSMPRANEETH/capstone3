@@ -8,6 +8,7 @@ import { Profile } from "../views/Profile";
 import { ArticleDetails } from "../views/Articles/ArticleDetails";
 import { MatchDetails } from "../views/Matches/MatchDetails";
 import { Preferences } from "../views/Preferences";
+import NotFound from "../views/404";
 
 const router = createBrowserRouter([
 	{ path: "/signin", element: <Signin /> },
@@ -43,7 +44,7 @@ const router = createBrowserRouter([
 					{ path: ":matchID", element: <MatchDetails /> },
 				],
 			},
-			{ path: "*", element: <>Undefined yet</> },
+			{ path: "*", element: <NotFound /> },
 		],
 	},
 ]);

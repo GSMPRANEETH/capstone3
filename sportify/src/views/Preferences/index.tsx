@@ -89,17 +89,20 @@ export const Preferences: React.FC = () => {
 									<Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
 										<Dialog.Title
 											as="h3"
-											className="text-lg font-medium leading-6 text-gray-900"
+											className="text-2xl font-bold leading-6 text-gray-900"
 										>
 											Preferences
 										</Dialog.Title>
 
-										<div className="mt-2">
-											<form onSubmit={handleSubmit(onSubmit)}>
-												<h3 className="text-xl mb-2 mt-4">
+										<div>
+											<form
+												onSubmit={handleSubmit(onSubmit)}
+												className="mt-2 flex flex-col gap-4"
+											>
+												<h3 className="text-xl">
 													<strong>Favourite Sports</strong>
 												</h3>
-												<div className="grid grid-cols-3 gap-4 mb-6">
+												<div className="grid grid-cols-3 gap-2">
 													{sports.map((sport) => (
 														<label key={sport.id} className="flex items-center">
 															<input
@@ -108,17 +111,17 @@ export const Preferences: React.FC = () => {
 																	sport.id
 																)}
 																{...register(`sports.${sport.id}`)}
-																className="mr-2"
+																className="mr-1"
 															/>
 															<span>{sport.name}</span>
 														</label>
 													))}
 												</div>
 
-												<h3 className="text-xl mb-2 mt-4">
+												<h3 className="text-xl">
 													<strong>Favourite Teams</strong>
 												</h3>
-												<div className="grid grid-cols-3 gap-4 mb-6">
+												<div className="grid grid-cols-3 gap-2">
 													{teams.map((team) => (
 														<label key={team.id} className="flex items-center">
 															<input
@@ -127,7 +130,7 @@ export const Preferences: React.FC = () => {
 																	team.id
 																)}
 																{...register(`teams.${team.id}`)}
-																className="mr-2"
+																className="mr-1"
 															/>
 															<span>{team.name}</span>
 														</label>

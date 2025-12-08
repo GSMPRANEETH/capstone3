@@ -121,12 +121,12 @@ export default function Example() {
 							>
 								{isAuth && (
 									<MenuItem>
-										<a
-											href="/user/profile"
+										<Link
+											to="/user/profile"
 											className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5"
 										>
 											Profile
-										</a>
+										</Link>
 									</MenuItem>
 								)}
 								<MenuItem>
