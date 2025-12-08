@@ -3,6 +3,7 @@ import { useArticlesState } from "../../contexts/Articles/context";
 import { articleState } from "../../contexts/Articles/reducer";
 import { ArticlesPayload } from "../../contexts/Articles/types";
 import { usePreferencesState } from "../../contexts/Preferences/context";
+import { useNavigate } from "react-router-dom";
 
 export const FavList: React.FC<{
 	sportId: number | "";
@@ -12,6 +13,7 @@ export const FavList: React.FC<{
 	const preferencesState = usePreferencesState();
 	const isAuth = !!localStorage.getItem("authToken");
 	const [articles, setArticles] = useState<ArticlesPayload[]>([]);
+	const navigate = useNavigate();
 	useEffect(() => {
 		const preferredSports = preferencesState?.preferences?.sports || [];
 		const preferredTeams = preferencesState?.preferences?.teams || [];
@@ -63,12 +65,16 @@ export const FavList: React.FC<{
 		<div className="max-h-[45vh] overflow-y-auto ">
 			{articles.map((article) => (
 				<div key={article.id}>
-					<div className="flex border border-gray-800 p-4">
-						<div className="w-3/4 gap-2 flex flex-col">
+					<div className="flex border border-gray-800 p-2 mb-2">
+						<div className="gap-2 flex flex-col">
 							<p className="text-xl font-semibold">{article.title}</p>
-							<div className="flex justify-between items-center w-full">
-								<a href={`article/${article.id}`}>Read More</a>
-							</div>
+							<p className="text-sm line-clamp-2">{article.summary}</p>
+							<button
+								onClick={() => navigate(`/article/${article.id}`)}
+								className="bg-gray-400 min-w-full"
+							>
+								Read More
+							</button>
 						</div>
 					</div>
 				</div>

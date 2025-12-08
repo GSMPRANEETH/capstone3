@@ -36,7 +36,7 @@ const SignupForm: React.FC = () => {
 					type="text"
 					id="userName"
 					{...register("userName", { required: true })}
-					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 						errors.userName ? "border-red-500 focus:border-red-500" : ""
 					}`}
 				/>
@@ -52,7 +52,7 @@ const SignupForm: React.FC = () => {
 					type="email"
 					id="userEmail"
 					{...register("userEmail", { required: true })}
-					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 						errors.userEmail ? "border-red-500 focus:border-red-500" : ""
 					}`}
 				/>
@@ -70,7 +70,7 @@ const SignupForm: React.FC = () => {
 					type="password"
 					id="userPassword"
 					{...register("userPassword", { required: true })}
-					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 						errors.userPassword ? "border-red-500 focus:border-red-500" : ""
 					}`}
 				/>

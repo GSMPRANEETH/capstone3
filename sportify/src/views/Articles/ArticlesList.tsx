@@ -65,14 +65,16 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			<div ref={ref} {...props} className="max-h-[60vh] overflow-y-auto ">
 				{articles.map((article) => (
 					<div key={article.id}>
-						<div className="flex border border-gray-800 p-4">
+						<div className="flex border border-gray-800 p-4 mb-2">
 							<div className="w-3/4 gap-2 flex flex-col">
 								<p className="text-xs">{article.sport.name}</p>
 								<p className="text-xl font-semibold">{article.title}</p>
-								<p className="text-sm  line-clamp-2">{article.summary}</p>
+								<p className="text-sm line-clamp-2">{article.summary}</p>
 								<div className="flex justify-between items-center w-full">
 									<p className="text-xs">{article.date}</p>
-									<a href={`article/${article.id}`}>Read More</a>
+									<Link to={`/article/${article.id}`} className="underline">
+										Read More ...
+									</Link>
 								</div>
 							</div>
 							<img

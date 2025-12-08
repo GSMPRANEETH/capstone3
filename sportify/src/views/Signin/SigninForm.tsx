@@ -32,7 +32,7 @@ const SigninForm: React.FC = () => {
 					type="email"
 					id="email"
 					{...register("email", { required: true })}
-					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 						errors.email ? "border-red-500 focus:border-red-500" : ""
 					}`}
 				/>
@@ -50,7 +50,7 @@ const SigninForm: React.FC = () => {
 					type="password"
 					id="password"
 					{...register("password", { required: true })}
-					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 						errors.password ? "border-red-500 focus:border-red-500" : ""
 					}`}
 				/>

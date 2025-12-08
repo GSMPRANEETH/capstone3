@@ -91,14 +91,14 @@ export const Profile: React.FC = () => {
 												<button
 													type="button"
 													onClick={closeModal}
-													className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+													className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
 												>
 													Close
 												</button>
 												<button
 													type="button"
 													onClick={() => setChange(true)}
-													className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+													className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md"
 												>
 													Change Password
 												</button>
@@ -114,7 +114,7 @@ export const Profile: React.FC = () => {
 													placeholder="Enter Current Password"
 													id="current_password"
 													{...register("current_password", { required: true })}
-													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 														errors.current_password
 															? "border-red-500 focus:border-red-500"
 															: ""
@@ -133,7 +133,7 @@ export const Profile: React.FC = () => {
 													placeholder="Enter New Password"
 													id="new_password"
 													{...register("new_password", { required: true })}
-													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 														errors.new_password
 															? "border-red-500 focus:border-red-500"
 															: ""
@@ -152,7 +152,7 @@ export const Profile: React.FC = () => {
 													placeholder="Enter Confirm Password"
 													id="confirm_password"
 													{...register("confirm_password", { required: true })}
-													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
+													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 														errors.confirm_password
 															? "border-red-500 focus:border-red-500"
 															: ""
@@ -168,13 +168,13 @@ export const Profile: React.FC = () => {
 													<button
 														type="button"
 														onClick={closeModal}
-														className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+														className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
 													>
 														Close
 													</button>
 													<button
 														type="submit"
-														className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+														className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md"
 													>
 														Save Changes
 													</button>
