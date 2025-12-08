@@ -1,9 +1,7 @@
 import { Transition, Dialog } from "@headlessui/react";
-import React, { Fragment, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { API_ENDPOINT } from "../../utls/constants";
-import { MatchesPayload } from "../../contexts/Matches/types";
-import { showMatch } from "../../contexts/Matches/actions";
+import React, { Fragment, useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { MatchDetailsPayload } from "../../contexts/Matches/types";
 
 export const MatchDetails: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
@@ -13,24 +11,14 @@ export const MatchDetails: React.FC = () => {
 		setIsOpen(false);
 		navigate("../");
 	};
-	const { matchID } = useParams();
-	type MatchDetails = MatchesPayload & {
-		score: Record<string, string>;
-		startsAt: string;
-		playingTeam: number;
-		story: string;
-	};
+	useParams();
+	const location = useLocation();
+	const matchFromState = (location.state as { match?: MatchDetailsPayload })
+		?.match;
 
-	const [match, setMatch] = useState<MatchDetails>({} as MatchDetails);
-
-	const obtainDetails = async () => {
-		const details = await showMatch(matchID ?? "");
-		setMatch(details);
-	};
-
-	useEffect(() => {
-		obtainDetails();
-	}, []);
+	const [match] = useState<MatchDetailsPayload>(
+		matchFromState || ({} as MatchDetailsPayload)
+	);
 	return (
 		<>
 			<Transition appear show={isOpen} as={Fragment}>

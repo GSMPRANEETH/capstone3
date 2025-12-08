@@ -9,6 +9,8 @@ import { FavList } from "./FavList";
 export const Favourites: React.FC = () => {
 	const [sports, setSports] = useState<Sport[]>([]);
 	const [teams, setTeams] = useState<Team[]>([]);
+	const [selectedSport, setSelectedSport] = useState<number | "">("");
+	const [selectedTeam, setSelectedTeam] = useState<number | "">("");
 	const preferencesState = usePreferencesState();
 	const isAuth = !!localStorage.getItem("authToken");
 	const obtainSports = async () => {
@@ -35,11 +37,17 @@ export const Favourites: React.FC = () => {
 		preferencesState?.preferences?.teams,
 	]);
 	return (
-		<>
+		<div className="gap-4">
 			<p className="text-4xl">Favourites</p>
-			<>
+			<div>
 				<p>Sports</p>
-				<select className="border rounded p-2 w-full">
+				<select
+					className="border rounded p-2 w-full"
+					value={selectedSport}
+					onChange={(e) =>
+						setSelectedSport(e.target.value ? Number(e.target.value) : "")
+					}
+				>
 					<option value="">-- Select a sport --</option>
 					{sports.map((sport) => (
 						<option key={sport.id} value={sport.id}>
@@ -48,7 +56,13 @@ export const Favourites: React.FC = () => {
 					))}
 				</select>
 				<p>Teams</p>
-				<select className="border rounded p-2 w-full">
+				<select
+					className="border rounded p-2 w-full"
+					value={selectedTeam}
+					onChange={(e) =>
+						setSelectedTeam(e.target.value ? Number(e.target.value) : "")
+					}
+				>
 					<option value="">-- Select a team --</option>
 					{teams.map((team) => (
 						<option key={team.id} value={team.id}>
@@ -56,8 +70,8 @@ export const Favourites: React.FC = () => {
 						</option>
 					))}
 				</select>
-			</>
-			<FavList />
-		</>
+			</div>
+			<FavList sportId={selectedSport} teamId={selectedTeam} />
+		</div>
 	);
 };

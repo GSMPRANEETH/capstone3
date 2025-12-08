@@ -19,3 +19,10 @@ export interface MatchesState {
 }
 
 export type MatchesDispatch = React.Dispatch<MatchesActions>;
+
+export type MatchDetailsPayload = MatchesPayload & {
+	score: Record<string, string>;
+	startsAt: string;
+	playingTeam: number;
+	story: string;
+};

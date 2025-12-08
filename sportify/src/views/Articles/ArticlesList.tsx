@@ -62,7 +62,7 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			return <p>No articles available.</p>;
 		}
 		return (
-			<div ref={ref} {...props} className="max-h-[63vh] overflow-y-auto ">
+			<div ref={ref} {...props} className="max-h-[60vh] overflow-y-auto ">
 				{articles.map((article) => (
 					<div key={article.id}>
 						<div className="flex border border-gray-800 p-4">

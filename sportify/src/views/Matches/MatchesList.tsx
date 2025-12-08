@@ -9,8 +9,7 @@ import {
 import { usePreferencesState } from "../../contexts/Preferences/context";
 import { listSports } from "../../contexts/Sports/actions";
 import { Sport } from "../../contexts/Sports/types";
-import { listTeams } from "../../contexts/Teams/actions";
-import { Team } from "../../contexts/Teams/types";
+import { MatchCard } from "./MatchCard";
 
 export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 	(props, ref) => {
@@ -74,14 +73,7 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		return (
 			<div ref={ref} {...props} className="flex gap-4 overflow-x-auto pb-4">
 				{matches.map((match) => (
-					<Link
-						key={match.id}
-						to={`match/${match.id}`}
-						className="flex-shrink-0 border border-gray-300 rounded-lg p-4 min-w-max"
-					>
-						<p className="font-italic">{match.sportName}</p>
-						<p className="font-semibold">{match.name}</p>
-					</Link>
+					<MatchCard key={match.id} id={match.id} />
 				))}
 			</div>
 		);
