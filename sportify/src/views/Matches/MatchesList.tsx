@@ -35,22 +35,22 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		useEffect(() => {
 			obtainSports();
 			const preferredTeams = preferencesState?.preferences?.teams || [];
-			const liveMatches = matchesState?.matches.filter(
-				(match) => match.isRunning
+			const listMatches = matchesState?.matches.sort(
+				(a, b) => new Date(b.endsAt).getTime() - new Date(a.endsAt).getTime()
 			);
 			if (isAuth) {
 				let filteredMatches: MatchesPayload[] = [];
 
 				if (sports.length > 0) {
 					filteredMatches =
-						liveMatches?.filter((match) =>
+						listMatches?.filter((match) =>
 							sports.some((sport) => sport.name === match.sportName)
 						) || [];
 				}
 
 				if (preferredTeams.length > 0) {
 					const teamMatchedMatches =
-						liveMatches?.filter(
+						listMatches?.filter(
 							(match) =>
 								match.teams.some((team) => preferredTeams.includes(team.id)) &&
 								!filteredMatches.some((m) => m.id === match.id)
@@ -58,9 +58,9 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 					filteredMatches = [...filteredMatches, ...teamMatchedMatches];
 				}
 
-				setMatches(filteredMatches);
+				setMatches(filteredMatches.slice(0, 5));
 			} else {
-				setMatches(liveMatches || []);
+				setMatches(listMatches?.slice(0, 5) || []);
 			}
 		}, [sports, preferencesState?.preferences?.teams, matchesState?.matches]);
 

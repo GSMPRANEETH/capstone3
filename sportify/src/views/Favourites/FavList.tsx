@@ -13,6 +13,7 @@ export const FavList: React.FC<{
 	const preferencesState = usePreferencesState();
 	const isAuth = !!localStorage.getItem("authToken");
 	const [articles, setArticles] = useState<ArticlesPayload[]>([]);
+	const [userArticles, setUserArticles] = useState<ArticlesPayload[]>([]);
 	const navigate = useNavigate();
 	useEffect(() => {
 		const preferredSports = preferencesState?.preferences?.sports || [];
@@ -39,8 +40,10 @@ export const FavList: React.FC<{
 			}
 
 			setArticles(filteredArticles);
+			setUserArticles(filteredArticles);
 		} else {
 			setArticles(articleState?.articles || []);
+			setUserArticles(articleState?.articles || []);
 		}
 	}, [
 		preferencesState?.preferences?.sports,
@@ -48,7 +51,7 @@ export const FavList: React.FC<{
 		articleState?.articles,
 	]);
 	useEffect(() => {
-		let chosenArticles = articles;
+		let chosenArticles = userArticles;
 		if (sportId !== "") {
 			chosenArticles = chosenArticles.filter(
 				(article) => article.sport.id === sportId
@@ -62,7 +65,7 @@ export const FavList: React.FC<{
 		setArticles(chosenArticles);
 	}, [sportId, teamId]);
 	return (
-		<div className="max-h-[45vh] overflow-y-auto ">
+		<div className="max-h-[40vh] overflow-y-auto ">
 			{articles.map((article) => (
 				<div key={article.id}>
 					<div className="flex border border-gray-800 p-2 mb-2">

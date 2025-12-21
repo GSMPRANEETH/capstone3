@@ -17,23 +17,28 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		const articleDispatch = useArticlesDispatch();
 		const preferencesState = usePreferencesState();
 		const [articles, setArticles] = useState<ArticlesPayload[]>([]);
+		const [userArticles, setUserArticles] = useState<ArticlesPayload[]>([]);
 		const [sports, setSports] = useState<Sport[]>([]);
 		const isAuth = !!localStorage.getItem("authToken");
-
-		const obtainSports = async () => {
+		const [option, setOption] = useState<string>("default");
+		const obtainSports = async (preferredSports: number[]) => {
 			const sportsData = await listSports();
-			setSports(sportsData);
+			const filteredSports = isAuth
+				? sportsData.filter((sport: Sport) =>
+						preferredSports.includes(sport.id)
+				  )
+				: sportsData;
+			setSports(filteredSports);
 		};
 
 		useEffect(() => {
 			listArticles(articleDispatch);
-			obtainSports();
 		}, []);
 
 		useEffect(() => {
 			const preferredSports = preferencesState?.preferences?.sports || [];
 			const preferredTeams = preferencesState?.preferences?.teams || [];
-
+			obtainSports(preferredSports);
 			if (isAuth) {
 				let filteredArticles: ArticlesPayload[] = [];
 
@@ -55,8 +60,10 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 					filteredArticles = [...filteredArticles, ...teamMatchedArticles];
 				}
 				setArticles(filteredArticles);
+				setUserArticles(filteredArticles);
 			} else {
 				setArticles(articleState?.articles || []);
+				setUserArticles(articleState?.articles || []);
 			}
 		}, [
 			preferencesState?.preferences?.sports,
@@ -64,15 +71,26 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			articleState?.articles,
 		]);
 
+		useEffect(() => {
+			if (option != "default") {
+				const filteredArticles = articleState?.articles?.filter(
+					(article) => article.sport.name === option
+				);
+				setArticles(filteredArticles || []);
+			} else {
+				setArticles(userArticles);
+			}
+		}, [option]);
+
 		if (articleState?.isLoading) {
 			return <p>Loading articles...</p>;
 		}
-		if (articles.length === 0) {
-			return <p>No articles available.</p>;
-		}
+		// if (articles.length === 0) {
+		// 	return <p>No articles available.</p>;
+		// }
 		return (
 			<div>
-				<Tabs defaultValue="default" className="w-[400px]">
+				<Tabs value={option} onValueChange={setOption}>
 					<TabsList>
 						<TabsTrigger value="default">
 							{isAuth ? "Your News" : "General"}
@@ -83,35 +101,47 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 							</TabsTrigger>
 						))}
 					</TabsList>
-					<TabsContent value="default">
-						Make changes to your account here.
-					</TabsContent>
-					<TabsContent value="password">Change your password here.</TabsContent>
-				</Tabs>
-				<div ref={ref} {...props} className="max-h-[60vh] overflow-y-auto ">
-					{articles.map((article) => (
-						<div key={article.id}>
-							<div className="flex border border-gray-800 p-4 mb-2">
-								<div className="w-3/4 gap-2 flex flex-col">
-									<p className="text-xs">{article.sport.name}</p>
-									<p className="text-xl font-semibold">{article.title}</p>
-									<p className="text-sm line-clamp-2">{article.summary}</p>
-									<div className="flex justify-between items-center w-full">
-										<p className="text-xs">{article.date}</p>
-										<Link to={`/article/${article.id}`} className="underline">
-											Read More ...
-										</Link>
+					<TabsContent
+						value={option}
+						ref={ref}
+						{...props}
+						className="max-h-[48vh] overflow-y-auto "
+					>
+						{articles.length > 0 ? (
+							<div>
+								{articles.map((article) => (
+									<div key={article.id}>
+										<div className="flex border border-gray-800 p-4 mb-2">
+											<div className="w-3/4 gap-2 flex flex-col">
+												<p className="text-xs">{article.sport.name}</p>
+												<p className="text-xl font-semibold">{article.title}</p>
+												<p className="text-sm line-clamp-2">
+													{article.summary}
+												</p>
+												<div className="flex justify-between items-center w-full">
+													<p>{new Date(article.date).toLocaleDateString()}</p>
+													<Link
+														to={`/article/${article.id}`}
+														className="underline"
+													>
+														Read More ...
+													</Link>
+												</div>
+											</div>
+											<img
+												className="h-24 object-cover ml-4 w-1/4"
+												src={article.thumbnail}
+												alt={article.title}
+											/>
+										</div>
 									</div>
-								</div>
-								<img
-									className="h-24 object-cover ml-4 w-1/4"
-									src={article.thumbnail}
-									alt={article.title}
-								/>
+								))}
 							</div>
-						</div>
-					))}
-				</div>
+						) : (
+							<p className="m-4">No articles available.</p>
+						)}
+					</TabsContent>
+				</Tabs>
 			</div>
 		);
 	}
