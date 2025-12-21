@@ -26,14 +26,17 @@ Whether you're a casual fan or a sports enthusiast, Sportify keeps you informed 
 <!-- ![News Articles](screenshots/articles.png) -->
 <!-- ![User Preferences](screenshots/preferences.png) -->
 
-*Screenshots will be added soon!*
+<img width="1388" height="1039" alt="image" src="https://github.com/user-attachments/assets/6977638e-54a7-4605-9ba9-014111ea1b51" />
+<img width="1317" height="1049" alt="image" src="https://github.com/user-attachments/assets/1c536b1b-ed8e-41e0-a0f4-ea15e2e090b7" />
+<img width="1354" height="1042" alt="image" src="https://github.com/user-attachments/assets/a7133d86-df69-4db0-b9d1-4f48f4db80dd" />
+
 
 ## 🚀 Live Application
 
 <!-- Add your deployed application URL here -->
 <!-- Example: Visit the live application at: [https://your-app-url.com](https://your-app-url.com) -->
 
-*Live URL coming soon!*
+[*Live URL coming soon!*](https://sportify-cp3.netlify.app/)
 
 ## 🎥 Video Demo
 
