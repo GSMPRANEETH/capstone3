@@ -62,9 +62,9 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 						filteredMatches = [...filteredMatches, ...teamMatchedMatches];
 					}
 
-					setMatches(filteredMatches.slice(0, 5));
+					setMatches(filteredMatches);
 				} else {
-					setMatches(sortedMatches.slice(0, 5));
+					setMatches(sortedMatches);
 				}
 			};
 
