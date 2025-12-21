@@ -21,6 +21,10 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		const [sports, setSports] = useState<Sport[]>([]);
 		const isAuth = !!localStorage.getItem("authToken");
 		const [option, setOption] = useState<string>("default");
+		const sortByDateDesc = (arr: ArticlesPayload[] = []) =>
+			[...arr].sort(
+				(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+			);
 		const obtainSports = async (preferredSports: number[]) => {
 			const sportsData = await listSports();
 			const filteredSports = isAuth
@@ -59,11 +63,13 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 						) || [];
 					filteredArticles = [...filteredArticles, ...teamMatchedArticles];
 				}
-				setArticles(filteredArticles);
-				setUserArticles(filteredArticles);
+				const sorted = sortByDateDesc(filteredArticles);
+				setArticles(sorted);
+				setUserArticles(sorted);
 			} else {
-				setArticles(articleState?.articles || []);
-				setUserArticles(articleState?.articles || []);
+				const sorted = sortByDateDesc(articleState?.articles || []);
+				setArticles(sorted);
+				setUserArticles(sorted);
 			}
 		}, [
 			preferencesState?.preferences?.sports,
@@ -76,7 +82,7 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 				const filteredArticles = articleState?.articles?.filter(
 					(article) => article.sport.name === option
 				);
-				setArticles(filteredArticles || []);
+				setArticles(sortByDateDesc(filteredArticles || []));
 			} else {
 				setArticles(userArticles);
 			}
