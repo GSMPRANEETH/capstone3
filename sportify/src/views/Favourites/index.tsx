@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { listSports } from "../../contexts/Sports/actions";
 import { Sport } from "../../contexts/Sports/types";
 import { listTeams } from "../../contexts/Teams/actions";
@@ -11,6 +11,7 @@ export const Favourites: React.FC = () => {
 	const [teams, setTeams] = useState<Team[]>([]);
 	const [selectedSport, setSelectedSport] = useState<number | "">("");
 	const [selectedTeam, setSelectedTeam] = useState<number | "">("");
+	const [baseTeams, setBaseTeams] = useState<Team[]>([]);
 	const preferencesState = usePreferencesState();
 	const isAuth = !!localStorage.getItem("authToken");
 	const obtainSports = async () => {
@@ -28,6 +29,7 @@ export const Favourites: React.FC = () => {
 			? teamsData.filter((team: Team) => preferredTeams.includes(team.id))
 			: teamsData;
 		setTeams(filteredTeams);
+		setBaseTeams(teamsData);
 	};
 	useEffect(() => {
 		obtainSports();
@@ -36,13 +38,24 @@ export const Favourites: React.FC = () => {
 		preferencesState?.preferences?.sports,
 		preferencesState?.preferences?.teams,
 	]);
+	useEffect(() => {
+		if (selectedSport === "") {
+			setTeams(baseTeams);
+		} else {
+			const currSport = sports.find((sport) => sport.id === selectedSport);
+			const filteredTeams = baseTeams.filter(
+				(team) => team.plays === currSport?.name
+			);
+			setTeams(filteredTeams);
+		}
+	}, [selectedSport]);
 	return (
 		<div className="gap-4 flex flex-col">
 			<p className="text-4xl">Favourites</p>
 			<div>
 				<p>Sports</p>
 				<select
-					className="border rounded p-2 w-full"
+					className="border rounded p-2 w-full dark:bg-gray-700"
 					value={selectedSport}
 					onChange={(e) =>
 						setSelectedSport(e.target.value ? Number(e.target.value) : "")
@@ -57,7 +70,7 @@ export const Favourites: React.FC = () => {
 				</select>
 				<p>Teams</p>
 				<select
-					className="border rounded p-2 w-full"
+					className="border rounded p-2 w-full dark:bg-gray-700"
 					value={selectedTeam}
 					onChange={(e) =>
 						setSelectedTeam(e.target.value ? Number(e.target.value) : "")

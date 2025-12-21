@@ -68,7 +68,7 @@ export const FavList: React.FC<{
 		<div className="max-h-[40vh] overflow-y-auto ">
 			{articles.map((article) => (
 				<div key={article.id}>
-					<div className="flex border border-gray-800 p-2 mb-2">
+					<div className="flex border border-gray-400 p-2 mb-2">
 						<div className="gap-2 flex flex-col">
 							<p className="text-xl font-semibold">{article.title}</p>
 							<p className="text-sm line-clamp-2">{article.summary}</p>

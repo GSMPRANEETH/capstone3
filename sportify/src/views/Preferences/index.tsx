@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useContext } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { listSports } from "../../contexts/Sports/actions";
@@ -14,12 +14,14 @@ import {
 	usePreferencesDispatch,
 	usePreferencesState,
 } from "../../contexts/Preferences/context";
+import { ThemeContext } from "@/contexts/Theme/ThemeContext";
 
 export const Preferences: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
 	const [preferences, setPreferences] = useState<any>(null);
 	const [sports, setSports] = useState<Sport[]>([]);
 	const [teams, setTeams] = useState<Team[]>([]);
+	const { theme } = useContext(ThemeContext);
 
 	const obtainSports = async () => {
 		const sportsData = await listSports();
@@ -60,106 +62,120 @@ export const Preferences: React.FC = () => {
 		obtainTeams();
 	}, []);
 
-    return (
-			<>
-				<Transition appear show={isOpen} as={Fragment}>
-					<Dialog as="div" className="relative z-10" onClose={closeModal}>
-						<Transition.Child
-							as={Fragment}
-							enter="ease-out duration-300"
-							enterFrom="opacity-0"
-							enterTo="opacity-100"
-							leave="ease-in duration-200"
-							leaveFrom="opacity-100"
-							leaveTo="opacity-0"
-						>
-							<div className="fixed inset-0 bg-black bg-opacity-25" />
-						</Transition.Child>
-						<div className="fixed inset-0 overflow-y-auto">
-							<div className="flex min-h-full items-center justify-center p-4 text-center">
-								<Transition.Child
-									as={Fragment}
-									enter="ease-out duration-300"
-									enterFrom="opacity-0 scale-95"
-									enterTo="opacity-100 scale-100"
-									leave="ease-in duration-200"
-									leaveFrom="opacity-100 scale-100"
-									leaveTo="opacity-0 scale-95"
-								>
-									<Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-										<Dialog.Title
-											as="h3"
-											className="text-2xl font-bold leading-6 text-gray-900"
-										>
-											Preferences
-										</Dialog.Title>
+	return (
+		<>
+			<Transition appear show={isOpen} as={Fragment}>
+				<Dialog
+					as="div"
+					className={`relative z-10 ${theme === "dark" ? "dark" : ""}`}
+					onClose={closeModal}
+				>
+					<Transition.Child
+						as={Fragment}
+						enter="ease-out duration-300"
+						enterFrom="opacity-0"
+						enterTo="opacity-100"
+						leave="ease-in duration-200"
+						leaveFrom="opacity-100"
+						leaveTo="opacity-0"
+					>
+						<div className="fixed inset-0 bg-black bg-opacity-25" />
+					</Transition.Child>
+					<div className="fixed inset-0 overflow-y-auto">
+						<div className="flex min-h-full items-center justify-center p-4 text-center">
+							<Transition.Child
+								as={Fragment}
+								enter="ease-out duration-300"
+								enterFrom="opacity-0 scale-95"
+								enterTo="opacity-100 scale-100"
+								leave="ease-in duration-200"
+								leaveFrom="opacity-100 scale-100"
+								leaveTo="opacity-0 scale-95"
+							>
+								<Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 dark:text-white p-6 text-left align-middle shadow-xl transition-all">
+									<Dialog.Title
+										as="h3"
+										className="text-2xl font-bold leading-6 text-gray-900 dark:text-white"
+									>
+										Preferences
+									</Dialog.Title>
 
-										<div>
-											<form
-												onSubmit={handleSubmit(onSubmit)}
-												className="mt-2 flex flex-col gap-4"
-											>
-												<h3 className="text-xl">
-													<strong>Favourite Sports</strong>
+									<div>
+										<form
+											onSubmit={handleSubmit(onSubmit)}
+											className="mt-4 flex flex-col gap-6 max-h-[75vh] overflow-y-auto"
+										>
+											<div className="space-y-3">
+												<h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+													Favourite Sports
 												</h3>
-												<div className="grid grid-cols-3 gap-2">
+												<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
 													{sports.map((sport) => (
-														<label key={sport.id} className="flex items-center">
+														<label
+															key={sport.id}
+															className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+														>
 															<input
 																type="checkbox"
 																defaultChecked={preferences?.sports?.includes(
 																	sport.id
 																)}
 																{...register(`sports.${sport.id}`)}
-																className="mr-1"
+																className="w-4 h-4 rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-gray-400"
 															/>
-															<span>{sport.name}</span>
+															<span className="text-sm">{sport.name}</span>
 														</label>
 													))}
 												</div>
+											</div>
 
-												<h3 className="text-xl">
-													<strong>Favourite Teams</strong>
+											<div className="space-y-3">
+												<h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+													Favourite Teams
 												</h3>
-												<div className="grid grid-cols-3 gap-2">
+												<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
 													{teams.map((team) => (
-														<label key={team.id} className="flex items-center">
+														<label
+															key={team.id}
+															className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+														>
 															<input
 																type="checkbox"
 																defaultChecked={preferences?.teams?.includes(
 																	team.id
 																)}
 																{...register(`teams.${team.id}`)}
-																className="mr-1"
+																className="w-4 h-4 rounded border-gray-300 text-gray-600 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-gray-400"
 															/>
-															<span>{team.name}</span>
+															<span className="text-sm">{team.name}</span>
 														</label>
 													))}
 												</div>
+											</div>
 
-												<div className="flex justify-end gap-2 mt-4">
-													<button
-														type="button"
-														onClick={closeModal}
-														className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
-													>
-														Cancel
-													</button>
-													<button
-														type="submit"
-														className="inline-flex justify-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
-													>
-														Save
-													</button>
-												</div>
-											</form>
-										</div>
-									</Dialog.Panel>
-								</Transition.Child>
-							</div>
+											<div className="flex justify-end gap-3 pt-4 border-t dark:border-gray-700">
+												<button
+													type="button"
+													onClick={closeModal}
+													className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+												>
+													Cancel
+												</button>
+												<button
+													type="submit"
+													className="inline-flex justify-center rounded-md border border-transparent bg-gray-600 dark:bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+												>
+													Save
+												</button>
+											</div>
+										</form>
+									</div>
+								</Dialog.Panel>
+							</Transition.Child>
 						</div>
-					</Dialog>
-				</Transition>
-			</>
-		);
+					</div>
+				</Dialog>
+			</Transition>
+		</>
+	);
 };
