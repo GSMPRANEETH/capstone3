@@ -69,14 +69,14 @@ Whether you're a casual fan or a sports enthusiast, Sportify keeps you informed 
 <!-- Add your deployed application URL here -->
 <!-- Example: Visit the live application at: [https://your-app-url.com](https://your-app-url.com) -->
 
-[*Live URL coming soon!*](https://sportify-cp3.netlify.app/)
+[*Hosted via Netlify! <img width="16" height="16" alt="netlify" src="https://github.com/user-attachments/assets/fdee9384-c678-4638-99df-d275635b35a9" />*](https://sportify-cp3.netlify.app/)
 
 ## 🎥 Video Demo
 
 <!-- Add your video screencast link here -->
 <!-- Example: Watch the demo video: [Sportify Demo on YouTube](https://youtube.com/your-video) -->
 
-*Video demo coming soon!*
+[*Check out the demo on YouTube <img width="16" height="16" alt="youtube" src="https://github.com/user-attachments/assets/d02cf18f-1c84-48e0-ae7f-3feca4185334" />*](https://youtu.be/ZXns_XshrJM)
 
 ## 🛠️ Built With
 
