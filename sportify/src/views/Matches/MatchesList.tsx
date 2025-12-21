@@ -21,53 +21,60 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		const matchesDispatch = useMatchesDispatch();
 		const preferencesState = usePreferencesState();
 		const [matches, setMatches] = useState<MatchesPayload[]>([]);
-		const [sports, setSports] = useState<Sport[]>([]);
 		const isAuth = !!localStorage.getItem("authToken");
-		const obtainSports = async () => {
-			const sportsData = await listSports();
-			const preferredSports = preferencesState?.preferences?.sports || [];
-			const filteredSports = isAuth
-				? sportsData.filter((sport: Sport) =>
-						preferredSports.includes(sport.id)
-				  )
-				: sportsData;
-			setSports(filteredSports);
-		};
 		useEffect(() => {
 			listMatches(matchesDispatch);
 		}, []);
 		useEffect(() => {
-			obtainSports();
-			const preferredTeams = preferencesState?.preferences?.teams || [];
-			const listMatches = matchesState?.matches.sort(
-				(a, b) => new Date(b.endsAt).getTime() - new Date(a.endsAt).getTime()
-			);
-			if (isAuth) {
-				let filteredMatches: MatchesPayload[] = [];
+			const loadAndFilter = async () => {
+				const preferredTeams = preferencesState?.preferences?.teams || [];
+				const preferredSports = preferencesState?.preferences?.sports || [];
 
-				if (sports.length > 0) {
-					filteredMatches =
-						listMatches?.filter((match) =>
-							sports.some((sport) => sport.name === match.sportName)
-						) || [];
-				}
+				// Fetch fresh sports data with current preferences
+				const sportsData = await listSports();
+				const filteredSports = isAuth
+					? sportsData.filter((sport: Sport) =>
+							preferredSports.includes(sport.id)
+					  )
+					: sportsData;
 
-				if (preferredTeams.length > 0) {
-					const teamMatchedMatches =
-						listMatches?.filter(
+				const sortedMatches = (matchesState?.matches || []).sort(
+					(a, b) => new Date(b.endsAt).getTime() - new Date(a.endsAt).getTime()
+				);
+
+				if (isAuth) {
+					let filteredMatches: MatchesPayload[] = [];
+
+					if (preferredSports.length > 0) {
+						filteredMatches = sortedMatches.filter((match) =>
+							filteredSports.some(
+								(sport: Sport) => sport.name === match.sportName
+							)
+						);
+					}
+
+					if (preferredTeams.length > 0) {
+						const teamMatchedMatches = sortedMatches.filter(
 							(match) =>
 								match.teams.some((team) => preferredTeams.includes(team.id)) &&
 								!filteredMatches.some((m) => m.id === match.id)
-						) || [];
-					filteredMatches = [...filteredMatches, ...teamMatchedMatches];
+						);
+						filteredMatches = [...filteredMatches, ...teamMatchedMatches];
+					}
+
+					setMatches(filteredMatches.slice(0, 5));
+				} else {
+					setMatches(sortedMatches.slice(0, 5));
 				}
+			};
 
-				setMatches(filteredMatches.slice(0, 5));
-			} else {
-				setMatches(listMatches?.slice(0, 5) || []);
-			}
-		}, [preferencesState?.preferences?.teams]);
-
+			loadAndFilter();
+		}, [
+			preferencesState?.preferences?.teams,
+			preferencesState?.preferences?.sports,
+			matchesState?.matches,
+			isAuth,
+		]);
 		if (matchesState?.isLoading) {
 			return <p>Loading matches...</p>;
 		}
