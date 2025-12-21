@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { listArticles } from "../../contexts/Articles/actions";
 import {
@@ -85,9 +85,6 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		if (articleState?.isLoading) {
 			return <p>Loading articles...</p>;
 		}
-		// if (articles.length === 0) {
-		// 	return <p>No articles available.</p>;
-		// }
 		return (
 			<div>
 				<Tabs value={option} onValueChange={setOption}>

@@ -1,10 +1,19 @@
-import React, { useEffect } from "react";
-import { Articles } from "../Articles";
-import { Matches } from "../Matches";
+import React, { useEffect, Suspense, lazy } from "react";
 import { Outlet } from "react-router-dom";
-import { Favourites } from "../Favourites";
 import { getUserPreferences } from "../../contexts/Preferences/actions";
 import { usePreferencesDispatch } from "../../contexts/Preferences/context";
+import ErrorBoundary from "@/components/ErrorBoundary";
+
+const Articles = lazy(() =>
+	import("../Articles").then((m) => ({ default: m.Articles }))
+);
+const Matches = lazy(() =>
+	import("../Matches").then((m) => ({ default: m.Matches }))
+);
+const Favourites = lazy(() =>
+	import("../Favourites").then((m) => ({ default: m.Favourites }))
+);
+
 export const Home: React.FC = () => {
 	const preferencesDispatch = usePreferencesDispatch();
 	const isAuth = !!localStorage.getItem("authToken");
@@ -15,13 +24,25 @@ export const Home: React.FC = () => {
 	}, [isAuth]);
 	return (
 		<>
-			<Matches />
+			<ErrorBoundary>
+				<Suspense fallback={<p>Loading matches...</p>}>
+					<Matches />
+				</Suspense>
+			</ErrorBoundary>
 			<div className="flex gap-4">
 				<div className="w-3/4">
-					<Articles />
+					<ErrorBoundary>
+						<Suspense fallback={<p>Loading articles...</p>}>
+							<Articles />
+						</Suspense>
+					</ErrorBoundary>
 				</div>
 				<div className="w-1/4">
-					<Favourites />
+					<ErrorBoundary>
+						<Suspense fallback={<p>Loading favourites...</p>}>
+							<Favourites />
+						</Suspense>
+					</ErrorBoundary>
 				</div>
 			</div>
 			<Outlet />

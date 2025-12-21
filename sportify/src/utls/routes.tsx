@@ -1,14 +1,29 @@
+import React, { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import AccountLayout from "../components";
-import Signin from "../views/Signin";
-import Signup from "../views/Signup";
-import Logout from "../views/Signout";
-import { Home } from "../views/Home";
-import { Profile } from "../views/Profile";
-import { ArticleDetails } from "../views/Articles/ArticleDetails";
-import { MatchDetails } from "../views/Matches/MatchDetails";
-import { Preferences } from "../views/Preferences";
-import NotFound from "../views/404";
+const AccountLayout = lazy(() => import("../components"));
+const Signin = lazy(() => import("../views/Signin"));
+const Signup = lazy(() => import("../views/Signup"));
+const Logout = lazy(() => import("../views/Logout"));
+const Home = lazy(() =>
+	import("../views/Home").then((m) => ({ default: m.Home }))
+);
+const Profile = lazy(() =>
+	import("../views/Profile").then((m) => ({ default: m.Profile }))
+);
+const ArticleDetails = lazy(() =>
+	import("../views/Articles/ArticleDetails").then((m) => ({
+		default: m.ArticleDetails,
+	}))
+);
+const MatchDetails = lazy(() =>
+	import("../views/Matches/MatchDetails").then((m) => ({
+		default: m.MatchDetails,
+	}))
+);
+const Preferences = lazy(() =>
+	import("../views/Preferences").then((m) => ({ default: m.Preferences }))
+);
+const NotFound = lazy(() => import("../views/404"));
 
 const router = createBrowserRouter([
 	{ path: "/signin", element: <Signin /> },

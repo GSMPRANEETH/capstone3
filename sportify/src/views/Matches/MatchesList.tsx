@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState, Suspense, lazy } from "react";
 import { MatchesPayload } from "../../contexts/Matches/types";
 import { Link } from "react-router-dom";
 import { listMatches } from "../../contexts/Matches/actions";
@@ -9,7 +9,11 @@ import {
 import { usePreferencesState } from "../../contexts/Preferences/context";
 import { listSports } from "../../contexts/Sports/actions";
 import { Sport } from "../../contexts/Sports/types";
-import { MatchCard } from "./MatchCard";
+import ErrorBoundary from "@/components/ErrorBoundary";
+
+const MatchCard = lazy(() =>
+	import("./MatchCard").then((m) => ({ default: m.MatchCard }))
+);
 
 export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 	(props, ref) => {
@@ -62,7 +66,7 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			} else {
 				setMatches(listMatches?.slice(0, 5) || []);
 			}
-		}, [sports, preferencesState?.preferences?.teams, matchesState?.matches]);
+		}, [preferencesState?.preferences?.teams]);
 
 		if (matchesState?.isLoading) {
 			return <p>Loading matches...</p>;
@@ -72,9 +76,13 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		}
 		return (
 			<div ref={ref} {...props} className="flex gap-4 overflow-x-auto pb-4">
-				{matches.map((match) => (
-					<MatchCard key={match.id} id={match.id} />
-				))}
+				<ErrorBoundary>
+					<Suspense fallback={<p>Loading matches...</p>}>
+						{matches.map((match) => (
+							<MatchCard key={match.id} id={match.id} />
+						))}
+					</Suspense>
+				</ErrorBoundary>
 			</div>
 		);
 	}

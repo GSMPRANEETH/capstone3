@@ -1,10 +1,13 @@
-import { useState, useEffect, use } from "react";
+import React, { Suspense, lazy, useState, useEffect } from "react";
 import { listSports } from "../../contexts/Sports/actions";
 import { Sport } from "../../contexts/Sports/types";
 import { listTeams } from "../../contexts/Teams/actions";
 import { Team } from "../../contexts/Teams/types";
 import { usePreferencesState } from "../../contexts/Preferences/context";
-import { FavList } from "./FavList";
+import ErrorBoundary from "@/components/ErrorBoundary";
+const FavList = lazy(() =>
+	import("./FavList").then((m) => ({ default: m.FavList }))
+);
 
 export const Favourites: React.FC = () => {
 	const [sports, setSports] = useState<Sport[]>([]);
@@ -84,7 +87,11 @@ export const Favourites: React.FC = () => {
 					))}
 				</select>
 			</div>
-			<FavList sportId={selectedSport} teamId={selectedTeam} />
+			<ErrorBoundary>
+				<Suspense fallback={<p>Loading favourites...</p>}>
+					<FavList sportId={selectedSport} teamId={selectedTeam} />
+				</Suspense>
+			</ErrorBoundary>
 		</div>
 	);
 };

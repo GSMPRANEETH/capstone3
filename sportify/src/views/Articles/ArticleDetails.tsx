@@ -114,7 +114,7 @@ export const ArticleDetails: React.FC = () => {
 											</p>
 										</div>
 
-										{article?.teams.length > 0 && (
+										{article?.teams && article.teams.length > 0 && (
 											<div className="space-y-2">
 												<h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
 													Teams
