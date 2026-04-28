@@ -1,18 +1,19 @@
 import { Transition, Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
-import { API_ENDPOINT } from "../../utls/constants";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-	getUserDetails,
-	updateUserPassword,
-} from "../../contexts/Profile/actions";
-import { PasswordPayload, UserPayload } from "../../contexts/Profile/types";
+import { getUserDetails, updateUserPassword } from "../../services/profile";
+import { UserPayload, PasswordPayload } from "../../services/profile";
+
+// OWASP password strength: min 8 chars, uppercase, lowercase, digit, special char
+const OWASP_PASSWORD_REGEX =
+	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
 
 export const Profile: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);
 	const [change, setChange] = useState(false);
+	const [serverError, setServerError] = useState<string | null>(null);
 
 	interface FormData {
 		current_password: string;
@@ -28,12 +29,22 @@ export const Profile: React.FC = () => {
 	const {
 		register,
 		handleSubmit,
+		watch,
 		formState: { errors },
 	} = useForm<FormData>();
-	const onSubmit: SubmitHandler<PasswordPayload> = async (data) => {
-		await updateUserPassword(data);
-		alert("Password changed successfully");
-		closeModal();
+
+	const onSubmit: SubmitHandler<FormData> = async (data) => {
+		setServerError(null);
+		try {
+			await updateUserPassword({
+				current_password: data.current_password,
+				new_password: data.new_password,
+			});
+			alert("Password changed successfully");
+			closeModal();
+		} catch (err) {
+			setServerError((err as Error).message);
+		}
 	};
 	const [user, setUser] = useState<UserPayload>({} as UserPayload);
 	const obtainUser = async () => {
@@ -106,6 +117,11 @@ export const Profile: React.FC = () => {
 										)}
 										{change && (
 											<form onSubmit={handleSubmit(onSubmit)}>
+												{serverError && (
+													<div className="text-red-600 mb-3 p-3 bg-red-50 rounded-md border border-red-200">
+														{serverError}
+													</div>
+												)}
 												<h3>
 													<strong>Current Password</strong>
 												</h3>
@@ -132,7 +148,12 @@ export const Profile: React.FC = () => {
 													type="password"
 													placeholder="Enter New Password"
 													id="new_password"
-													{...register("new_password", { required: true })}
+													{...register("new_password", {
+														required: "New password is required",
+														validate: (value) =>
+															OWASP_PASSWORD_REGEX.test(value) ||
+															"Password must be at least 8 characters and include uppercase, lowercase, number, and special character",
+													})}
 													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 														errors.new_password
 															? "border-red-500 focus:border-red-500"
@@ -141,9 +162,12 @@ export const Profile: React.FC = () => {
 												/>
 												{errors.new_password && (
 													<span className="text-red-600 dark:text-red-400 mb-2 block">
-														This field is required
+														{errors.new_password.message}
 													</span>
 												)}
+												<p className="text-xs text-gray-500 mt-1 mb-2">
+													At least 8 characters with uppercase, lowercase, number, and special character (e.g. !@#$)
+												</p>
 												<h3>
 													<strong>Confirm Password</strong>
 												</h3>
@@ -151,7 +175,12 @@ export const Profile: React.FC = () => {
 													type="password"
 													placeholder="Enter Confirm Password"
 													id="confirm_password"
-													{...register("confirm_password", { required: true })}
+													{...register("confirm_password", {
+														required: "Please confirm your password",
+														validate: (value) =>
+															value === watch("new_password") ||
+															"Passwords do not match",
+													})}
 													className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 														errors.confirm_password
 															? "border-red-500 focus:border-red-500"
@@ -160,7 +189,7 @@ export const Profile: React.FC = () => {
 												/>
 												{errors.confirm_password && (
 													<span className="text-red-600 dark:text-red-400 mb-2 block">
-														This field is required
+														{errors.confirm_password.message}
 													</span>
 												)}
 

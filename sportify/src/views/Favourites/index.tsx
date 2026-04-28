@@ -5,6 +5,7 @@ import { listTeams } from "../../contexts/Teams/actions";
 import { Team } from "../../contexts/Teams/types";
 import { usePreferencesState } from "../../contexts/Preferences/context";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { useAuth } from "@/contexts/Auth/context";
 const FavList = lazy(() =>
 	import("./FavList").then((m) => ({ default: m.FavList }))
 );
@@ -16,11 +17,13 @@ export const Favourites: React.FC = () => {
 	const [selectedTeam, setSelectedTeam] = useState<number | "">("");
 	const [baseTeams, setBaseTeams] = useState<Team[]>([]);
 	const preferencesState = usePreferencesState();
-	const isAuth = !!localStorage.getItem("authToken");
+	const { isAuthenticated: isAuth } = useAuth();
 	const obtainSports = async () => {
 		const sportsData = await listSports();
 		const preferredSports = preferencesState?.preferences?.sports || [];
-		const filteredSports = isAuth
+		// Only filter when user actually has sports preferences
+		const hasPrefs = isAuth && preferredSports.length > 0;
+		const filteredSports = hasPrefs
 			? sportsData.filter((sport: Sport) => preferredSports.includes(sport.id))
 			: sportsData;
 		setSports(filteredSports);
@@ -28,7 +31,9 @@ export const Favourites: React.FC = () => {
 	const obtainTeams = async () => {
 		const teamsData = await listTeams();
 		const preferredTeams = preferencesState?.preferences?.teams || [];
-		const filteredTeams = isAuth
+		// Only filter when user actually has team preferences
+		const hasPrefs = isAuth && preferredTeams.length > 0;
+		const filteredTeams = hasPrefs
 			? teamsData.filter((team: Team) => preferredTeams.includes(team.id))
 			: teamsData;
 		setTeams(filteredTeams);

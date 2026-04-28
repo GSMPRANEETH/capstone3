@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { API_ENDPOINT } from "../../utls/constants";
-import { createUser } from "../../contexts/Authentication/actions";
+import { createUser } from "../../services/auth";
+import { useAuth } from "../../contexts/Auth/context";
+
+// OWASP password strength: min 8 chars, uppercase, lowercase, digit, special char
+const OWASP_PASSWORD_REGEX =
+	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+
 const SignupForm: React.FC = () => {
 	const navigate = useNavigate();
+	const { signIn } = useAuth();
+	const [serverError, setServerError] = useState<string | null>(null);
 
 	type Inputs = {
 		userName: string;
@@ -19,15 +26,23 @@ const SignupForm: React.FC = () => {
 	} = useForm<Inputs>();
 
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
-		const name = data.userName;
-		const email = data.userEmail;
-		const password = data.userPassword;
-		await createUser(name, email, password);
-		navigate("/user/preferences");
+		setServerError(null);
+		try {
+			const result = await createUser(data.userName, data.userEmail, data.userPassword);
+			signIn(result.auth_token, result.user);
+			navigate("/user/preferences");
+		} catch (err) {
+			setServerError((err as Error).message);
+		}
 	};
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
+			{serverError && (
+				<div className="text-red-600 dark:text-red-400 mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-md border border-red-200 dark:border-red-800">
+					{serverError}
+				</div>
+			)}
 			<div>
 				<label className="block text-gray-700 font-semibold mb-2">
 					Your Name:
@@ -69,16 +84,24 @@ const SignupForm: React.FC = () => {
 				<input
 					type="password"
 					id="userPassword"
-					{...register("userPassword", { required: true })}
+					{...register("userPassword", {
+						required: "Password is required",
+						validate: (value) =>
+							OWASP_PASSWORD_REGEX.test(value) ||
+							"Password must be at least 8 characters and include uppercase, lowercase, number, and special character",
+					})}
 					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
 						errors.userPassword ? "border-red-500 focus:border-red-500" : ""
 					}`}
 				/>
 				{errors.userPassword && (
 					<span className="text-red-600 dark:text-red-400 mb-2 block">
-						Create a password
+						{errors.userPassword.message}
 					</span>
 				)}
+				<p className="text-xs text-gray-500 mt-1">
+					At least 8 characters with uppercase, lowercase, number, and special character (e.g. !@#$)
+				</p>
 			</div>
 			<button
 				type="submit"

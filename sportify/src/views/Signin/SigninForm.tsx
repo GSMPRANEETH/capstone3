@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { signInUser } from "../../contexts/Authentication/actions";
+import { signInUser } from "../../services/auth";
+import { useAuth } from "../../contexts/Auth/context";
 
 const SigninForm: React.FC = () => {
 	type Inputs = {
@@ -16,16 +17,27 @@ const SigninForm: React.FC = () => {
 	} = useForm<Inputs>();
 
 	const navigate = useNavigate();
+	const { signIn } = useAuth();
+	const [serverError, setServerError] = useState<string | null>(null);
 
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
-		const email = data.email;
-		const password = data.password;
-		await signInUser(email, password);
-		navigate("/");
+		setServerError(null);
+		try {
+			const result = await signInUser(data.email, data.password);
+			signIn(result.auth_token, result.user);
+			navigate("/");
+		} catch (err) {
+			setServerError((err as Error).message);
+		}
 	};
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
+			{serverError && (
+				<div className="text-red-600 dark:text-red-400 mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-md border border-red-200 dark:border-red-800">
+					{serverError}
+				</div>
+			)}
 			<div>
 				<label className="block text-gray-700 font-semibold mb-2">Email:</label>
 				<input
