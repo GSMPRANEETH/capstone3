@@ -39,16 +39,13 @@ const router = createBrowserRouter([
 				path: "/user",
 				element: <ProtectedRoute />,
 				children: [
-					{ index: true, element: <Navigate to="../" replace /> },
 					{
-						path: "profile",
 						element: <Home />,
-						children: [{ index: true, element: <Profile /> }],
-					},
-					{
-						path: "preferences",
-						element: <Home />,
-						children: [{ index: true, element: <Preferences /> }],
+						children: [
+							{ index: true, element: <Navigate to="../" replace /> },
+							{ path: "profile", element: <Profile /> },
+							{ path: "preferences", element: <Preferences /> },
+						],
 					},
 				],
 			},
