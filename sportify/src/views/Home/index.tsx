@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { getUserPreferences } from "../../contexts/Preferences/actions";
 import { usePreferencesDispatch } from "../../contexts/Preferences/context";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { useAuth } from "@/contexts/Auth/context";
 
 const Articles = lazy(() =>
 	import("../Articles").then((m) => ({ default: m.Articles }))
@@ -16,7 +17,7 @@ const Favourites = lazy(() =>
 
 export const Home: React.FC = () => {
 	const preferencesDispatch = usePreferencesDispatch();
-	const isAuth = !!localStorage.getItem("authToken");
+	const { isAuthenticated: isAuth } = useAuth();
 	useEffect(() => {
 		if (isAuth) {
 			getUserPreferences(preferencesDispatch);

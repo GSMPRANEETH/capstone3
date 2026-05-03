@@ -10,6 +10,7 @@ import { ArticlesPayload } from "../../contexts/Articles/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { listSports } from "@/contexts/Sports/actions";
 import { Sport } from "@/contexts/Sports/types";
+import { useAuth } from "@/contexts/Auth/context";
 
 export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 	(props, ref) => {
@@ -19,15 +20,17 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		const [articles, setArticles] = useState<ArticlesPayload[]>([]);
 		const [userArticles, setUserArticles] = useState<ArticlesPayload[]>([]);
 		const [sports, setSports] = useState<Sport[]>([]);
-		const isAuth = !!localStorage.getItem("authToken");
+		const { isAuthenticated: isAuth } = useAuth();
 		const [option, setOption] = useState<string>("default");
 		const sortByDateDesc = (arr: ArticlesPayload[] = []) =>
 			[...arr].sort(
 				(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 			);
 		const obtainSports = async (preferredSports: number[]) => {
-			const sportsData = await listSports();
-			const filteredSports = isAuth
+			const sportsData = (await listSports()) ?? [];
+			// Only filter tabs by preference when user actually has preferences set
+			const hasPrefs = isAuth && preferredSports.length > 0;
+			const filteredSports = hasPrefs
 				? sportsData.filter((sport: Sport) =>
 						preferredSports.includes(sport.id)
 				  )
@@ -43,7 +46,10 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			const preferredSports = preferencesState?.preferences?.sports || [];
 			const preferredTeams = preferencesState?.preferences?.teams || [];
 			obtainSports(preferredSports);
-			if (isAuth) {
+			const hasPrefs =
+				isAuth && (preferredSports.length > 0 || preferredTeams.length > 0);
+
+			if (hasPrefs) {
 				let filteredArticles: ArticlesPayload[] = [];
 
 				if (preferredSports.length > 0) {
@@ -75,6 +81,7 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			preferencesState?.preferences?.sports,
 			preferencesState?.preferences?.teams,
 			articleState?.articles,
+			isAuth,
 		]);
 
 		useEffect(() => {
@@ -86,7 +93,7 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			} else {
 				setArticles(userArticles);
 			}
-		}, [option]);
+		}, [option, articleState?.articles, userArticles]);
 
 		if (articleState?.isLoading) {
 			return <p>Loading articles...</p>;
@@ -94,12 +101,12 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		return (
 			<div>
 				<Tabs value={option} onValueChange={setOption}>
-					<TabsList>
-						<TabsTrigger value="default">
+					<TabsList className="flex overflow-x-auto whitespace-nowrap w-full flex-nowrap">
+						<TabsTrigger value="default" className="shrink-0">
 							{isAuth ? "Your News" : "General"}
 						</TabsTrigger>
 						{sports.map((sport: Sport) => (
-							<TabsTrigger key={sport.id} value={sport.name}>
+							<TabsTrigger key={sport.id} value={sport.name} className="shrink-0">
 								{sport.name}
 							</TabsTrigger>
 						))}

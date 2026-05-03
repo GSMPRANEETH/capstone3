@@ -1,5 +1,6 @@
 import React, { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 const AccountLayout = lazy(() => import("../components"));
 const Signin = lazy(() => import("../views/Signin"));
 const Signup = lazy(() => import("../views/Signup"));
@@ -36,11 +37,16 @@ const router = createBrowserRouter([
 			{ index: true, element: <Home /> },
 			{
 				path: "/user",
-				element: <Home />,
+				element: <ProtectedRoute />,
 				children: [
-					{ index: true, element: <Navigate to="../" replace /> },
-					{ path: "profile", element: <Profile /> },
-					{ path: "preferences", element: <Preferences /> },
+					{
+						element: <Home />,
+						children: [
+							{ index: true, element: <Navigate to="/" replace /> },
+							{ path: "profile", element: <Profile /> },
+							{ path: "preferences", element: <Preferences /> },
+						],
+					},
 				],
 			},
 			{

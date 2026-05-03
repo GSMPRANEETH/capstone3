@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useArticlesState } from "../../contexts/Articles/context";
-import { articleState } from "../../contexts/Articles/reducer";
 import { ArticlesPayload } from "../../contexts/Articles/types";
 import { usePreferencesState } from "../../contexts/Preferences/context";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/Auth/context";
 
 export const FavList: React.FC<{
 	sportId: number | "";
@@ -11,15 +11,17 @@ export const FavList: React.FC<{
 }> = ({ sportId, teamId }) => {
 	const articleState = useArticlesState();
 	const preferencesState = usePreferencesState();
-	const isAuth = !!localStorage.getItem("authToken");
+	const { isAuthenticated: isAuth } = useAuth();
 	const [articles, setArticles] = useState<ArticlesPayload[]>([]);
 	const [userArticles, setUserArticles] = useState<ArticlesPayload[]>([]);
 	const navigate = useNavigate();
 	useEffect(() => {
 		const preferredSports = preferencesState?.preferences?.sports || [];
 		const preferredTeams = preferencesState?.preferences?.teams || [];
+		const hasPrefs =
+			isAuth && (preferredSports.length > 0 || preferredTeams.length > 0);
 
-		if (isAuth) {
+		if (hasPrefs) {
 			let filteredArticles: ArticlesPayload[] = [];
 
 			if (preferredSports.length > 0) {
@@ -49,6 +51,7 @@ export const FavList: React.FC<{
 		preferencesState?.preferences?.sports,
 		preferencesState?.preferences?.teams,
 		articleState?.articles,
+		isAuth,
 	]);
 	useEffect(() => {
 		let chosenArticles = userArticles;

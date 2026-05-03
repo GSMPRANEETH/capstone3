@@ -10,6 +10,7 @@ import { usePreferencesState } from "../../contexts/Preferences/context";
 import { listSports } from "../../contexts/Sports/actions";
 import { Sport } from "../../contexts/Sports/types";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { useAuth } from "@/contexts/Auth/context";
 
 const MatchCard = lazy(() =>
 	import("./MatchCard").then((m) => ({ default: m.MatchCard }))
@@ -21,7 +22,7 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 		const matchesDispatch = useMatchesDispatch();
 		const preferencesState = usePreferencesState();
 		const [matches, setMatches] = useState<MatchesPayload[]>([]);
-		const isAuth = !!localStorage.getItem("authToken");
+		const { isAuthenticated: isAuth } = useAuth();
 		useEffect(() => {
 			listMatches(matchesDispatch);
 		}, []);
@@ -29,20 +30,20 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			const loadAndFilter = async () => {
 				const preferredTeams = preferencesState?.preferences?.teams || [];
 				const preferredSports = preferencesState?.preferences?.sports || [];
+				const hasPrefs =
+					isAuth && (preferredSports.length > 0 || preferredTeams.length > 0);
 
-				// Fetch fresh sports data with current preferences
-				const sportsData = await listSports();
-				const filteredSports = isAuth
-					? sportsData.filter((sport: Sport) =>
-							preferredSports.includes(sport.id)
-					  )
-					: sportsData;
-
-				const sortedMatches = (matchesState?.matches || []).sort(
+				const sortedMatches = [...(matchesState?.matches || [])].sort(
 					(a, b) => new Date(b.endsAt).getTime() - new Date(a.endsAt).getTime()
 				);
 
-				if (isAuth) {
+				if (hasPrefs) {
+					// Fetch sports data only when we need to filter
+					const sportsData = (await listSports()) ?? [];
+					const filteredSports = sportsData.filter((sport: Sport) =>
+						preferredSports.includes(sport.id)
+					);
+
 					let filteredMatches: MatchesPayload[] = [];
 
 					if (preferredSports.length > 0) {
