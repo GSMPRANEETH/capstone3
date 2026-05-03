@@ -27,7 +27,7 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 				(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 			);
 		const obtainSports = async (preferredSports: number[]) => {
-			const sportsData = await listSports();
+			const sportsData = (await listSports()) ?? [];
 			// Only filter tabs by preference when user actually has preferences set
 			const hasPrefs = isAuth && preferredSports.length > 0;
 			const filteredSports = hasPrefs
@@ -93,7 +93,7 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			} else {
 				setArticles(userArticles);
 			}
-		}, [option]);
+		}, [option, articleState?.articles, userArticles]);
 
 		if (articleState?.isLoading) {
 			return <p>Loading articles...</p>;

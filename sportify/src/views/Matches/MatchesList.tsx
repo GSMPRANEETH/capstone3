@@ -39,7 +39,7 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 
 				if (hasPrefs) {
 					// Fetch sports data only when we need to filter
-					const sportsData = await listSports();
+					const sportsData = (await listSports()) ?? [];
 					const filteredSports = sportsData.filter((sport: Sport) =>
 						preferredSports.includes(sport.id)
 					);

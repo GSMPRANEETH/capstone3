@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts/Auth/context";
 
 // OWASP password strength: min 8 chars, uppercase, lowercase, digit, special char
 const OWASP_PASSWORD_REGEX =
-	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>\/?]).{8,}$/;
 
 const SignupForm: React.FC = () => {
 	const navigate = useNavigate();

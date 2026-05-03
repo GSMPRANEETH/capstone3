@@ -19,32 +19,35 @@ const AuthContext = createContext<AuthState | undefined>(undefined);
 export const AuthProvider: React.FC<React.PropsWithChildren> = ({
 	children,
 }) => {
-	const [token, setToken] = useState<string | null>(
-		() => localStorage.getItem("authToken")
-	);
-	const [user, setUser] = useState<AuthUser | null>(() => {
+	const [{ token, user }, setAuthState] = useState<{
+		token: string | null;
+		user: AuthUser | null;
+	}>(() => {
+		const storedToken = localStorage.getItem("authToken");
 		const userData = localStorage.getItem("userData");
 		try {
-			return userData ? JSON.parse(userData) : null;
+			const parsedUser = userData ? (JSON.parse(userData) as AuthUser) : null;
+			if (!storedToken || !parsedUser) {
+				return { token: null, user: null };
+			}
+			return { token: storedToken, user: parsedUser };
 		} catch {
 			localStorage.removeItem("userData");
 			localStorage.removeItem("authToken");
-			return null;
+			return { token: null, user: null };
 		}
 	});
 
 	const signIn = useCallback((newToken: string, newUser: AuthUser) => {
 		localStorage.setItem("authToken", newToken);
 		localStorage.setItem("userData", JSON.stringify(newUser));
-		setToken(newToken);
-		setUser(newUser);
+		setAuthState({ token: newToken, user: newUser });
 	}, []);
 
 	const signOut = useCallback(() => {
 		localStorage.removeItem("authToken");
 		localStorage.removeItem("userData");
-		setToken(null);
-		setUser(null);
+		setAuthState({ token: null, user: null });
 	}, []);
 
 	return (

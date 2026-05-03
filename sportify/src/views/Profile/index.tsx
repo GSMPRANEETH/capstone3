@@ -3,12 +3,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { getUserDetails, updateUserPassword } from "../../services/profile";
-import { UserPayload, PasswordPayload } from "../../services/profile";
+import {
+	getUserDetails,
+	updateUserPassword,
+	type UserPayload,
+} from "../../services/profile";
 
 // OWASP password strength: min 8 chars, uppercase, lowercase, digit, special char
 const OWASP_PASSWORD_REGEX =
-	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>\/?]).{8,}$/;
 
 export const Profile: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(true);

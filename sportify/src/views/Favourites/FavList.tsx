@@ -51,6 +51,7 @@ export const FavList: React.FC<{
 		preferencesState?.preferences?.sports,
 		preferencesState?.preferences?.teams,
 		articleState?.articles,
+		isAuth,
 	]);
 	useEffect(() => {
 		let chosenArticles = userArticles;
