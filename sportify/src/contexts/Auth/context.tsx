@@ -27,6 +27,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({
 		try {
 			return userData ? JSON.parse(userData) : null;
 		} catch {
+			localStorage.removeItem("userData");
+			localStorage.removeItem("authToken");
 			return null;
 		}
 	});

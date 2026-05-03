@@ -33,7 +33,7 @@ export const MatchesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 				const hasPrefs =
 					isAuth && (preferredSports.length > 0 || preferredTeams.length > 0);
 
-				const sortedMatches = (matchesState?.matches || []).sort(
+				const sortedMatches = [...(matchesState?.matches || [])].sort(
 					(a, b) => new Date(b.endsAt).getTime() - new Date(a.endsAt).getTime()
 				);
 

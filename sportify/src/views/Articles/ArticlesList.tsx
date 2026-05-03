@@ -81,6 +81,7 @@ export const ArticlesList = forwardRef<HTMLDivElement, React.PropsWithChildren>(
 			preferencesState?.preferences?.sports,
 			preferencesState?.preferences?.teams,
 			articleState?.articles,
+			isAuth,
 		]);
 
 		useEffect(() => {
