@@ -19,25 +19,36 @@ export const Favourites: React.FC = () => {
 	const preferencesState = usePreferencesState();
 	const { isAuthenticated: isAuth } = useAuth();
 	const obtainSports = async () => {
-		const sportsData = (await listSports()) ?? [];
-		const preferredSports = preferencesState?.preferences?.sports || [];
-		// Only filter when user actually has sports preferences
-		const hasPrefs = isAuth && preferredSports.length > 0;
-		const filteredSports = hasPrefs
-			? sportsData.filter((sport: Sport) => preferredSports.includes(sport.id))
-			: sportsData;
-		setSports(filteredSports);
+		try {
+			const sportsData = (await listSports()) ?? [];
+			const preferredSports = preferencesState?.preferences?.sports || [];
+			// Only filter when user actually has sports preferences
+			const hasPrefs = isAuth && preferredSports.length > 0;
+			const filteredSports = hasPrefs
+				? sportsData.filter((sport: Sport) => preferredSports.includes(sport.id))
+				: sportsData;
+			setSports(filteredSports);
+		} catch (error) {
+			console.error("Failed to fetch sports:", error);
+			setSports([]);
+		}
 	};
 	const obtainTeams = async () => {
-		const teamsData = (await listTeams()) ?? [];
-		const preferredTeams = preferencesState?.preferences?.teams || [];
-		// Only filter when user actually has team preferences
-		const hasPrefs = isAuth && preferredTeams.length > 0;
-		const filteredTeams = hasPrefs
-			? teamsData.filter((team: Team) => preferredTeams.includes(team.id))
-			: teamsData;
-		setTeams(filteredTeams);
-		setBaseTeams(teamsData);
+		try {
+			const teamsData = (await listTeams()) ?? [];
+			const preferredTeams = preferencesState?.preferences?.teams || [];
+			// Only filter when user actually has team preferences
+			const hasPrefs = isAuth && preferredTeams.length > 0;
+			const filteredTeams = hasPrefs
+				? teamsData.filter((team: Team) => preferredTeams.includes(team.id))
+				: teamsData;
+			setTeams(filteredTeams);
+			setBaseTeams(teamsData);
+		} catch (error) {
+			console.error("Failed to fetch teams:", error);
+			setTeams([]);
+			setBaseTeams([]);
+		}
 	};
 	useEffect(() => {
 		obtainSports();

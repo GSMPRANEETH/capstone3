@@ -17,16 +17,22 @@ const SignupForm: React.FC = () => {
 		userName: string;
 		userEmail: string;
 		userPassword: string;
+		confirmPassword: string;
 	};
 
 	const {
 		register,
 		handleSubmit,
+		watch,
 		formState: { errors },
 	} = useForm<Inputs>();
 
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
 		setServerError(null);
+		if (data.userPassword !== data.confirmPassword) {
+			setServerError("Passwords do not match");
+			return;
+		}
 		try {
 			const result = await createUser(data.userName, data.userEmail, data.userPassword);
 			signIn(result.auth_token, result.user);
@@ -39,7 +45,7 @@ const SignupForm: React.FC = () => {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			{serverError && (
-				<div className="text-red-600 dark:text-red-400 mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-md border border-red-200 dark:border-red-800">
+				<div className="text-red-600 dark:text-red-400 mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-md border border-red-200 dark:border-red-800" role="alert" aria-live="assertive">
 					{serverError}
 				</div>
 			)}
@@ -102,6 +108,28 @@ const SignupForm: React.FC = () => {
 				<p className="text-xs text-gray-500 mt-1">
 					At least 8 characters with uppercase, lowercase, number, and special character (e.g. !@#$)
 				</p>
+			</div>
+			<div>
+				<label className="block text-gray-700 font-semibold mb-2">
+					Confirm Password:
+				</label>
+				<input
+					type="password"
+					id="confirmPassword"
+					{...register("confirmPassword", {
+						required: "Please confirm your password",
+						validate: (value) =>
+							value === watch("userPassword") || "Passwords do not match",
+					})}
+					className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-gray-500 focus:shadow-outline-blue ${
+						errors.confirmPassword ? "border-red-500 focus:border-red-500" : ""
+					}`}
+				/>
+				{errors.confirmPassword && (
+					<span className="text-red-600 dark:text-red-400 mb-2 block">
+						{errors.confirmPassword.message}
+					</span>
+				)}
 			</div>
 			<button
 				type="submit"

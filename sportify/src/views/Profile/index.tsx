@@ -121,7 +121,7 @@ export const Profile: React.FC = () => {
 										{change && (
 											<form onSubmit={handleSubmit(onSubmit)}>
 												{serverError && (
-													<div className="text-red-600 mb-3 p-3 bg-red-50 rounded-md border border-red-200">
+													<div className="text-red-600 mb-3 p-3 bg-red-50 rounded-md border border-red-200" role="alert" aria-live="assertive">
 														{serverError}
 													</div>
 												)}
